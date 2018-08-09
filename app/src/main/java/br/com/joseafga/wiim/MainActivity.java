@@ -6,12 +6,16 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
@@ -29,17 +33,44 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        scannerView = new ZXingScannerView(this);
-        setContentView(scannerView);
-        int currentApiVersion = Build.VERSION.SDK_INT;
+        // set layout view
+        setContentView(R.layout.activity_main);
 
-        if (currentApiVersion >= Build.VERSION_CODES.M) {
-            if (checkPermission()) {
-                Toast.makeText(getApplicationContext(), "Permissão já concedida!", Toast.LENGTH_LONG).show();
-            } else {
+        // scanner init
+        scannerView = new ZXingScannerView(this);
+        ConstraintLayout lo = findViewById(R.id.scanner_view);
+        lo.addView(scannerView);
+        scannerView.setAutoFocus(true);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!checkPermission()) {
                 requestPermission();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // inflate toolbar
+        getMenuInflater().inflate(R.menu.toolbar, menu);
+
+        //return super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.ac_settings:
+                Toast.makeText(this, R.string.settings, Toast.LENGTH_SHORT).show();
+                break;
+                // ?more options
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private boolean checkPermission() {
@@ -54,8 +85,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     public void onResume() {
         super.onResume();
 
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
                 if (scannerView == null) {
                     scannerView = new ZXingScannerView(this);
@@ -79,22 +109,25 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         switch (requestCode) {
             case REQUEST_CAMERA:
                 if (grantResults.length > 0) {
-
                     boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+
                     if (!cameraAccepted) {
-                        Toast.makeText(getApplicationContext(), "Permissão negada, não é possivel acessar a câmera", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.permission_denied, Toast.LENGTH_LONG).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             if (shouldShowRequestPermissionRationale(CAMERA)) {
-                                showMessageOKCancel("É necessário conceder as permissões de acesso",
-                                        new DialogInterface.OnClickListener() {
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setMessage("É necessário conceder as permissões de acesso")
+                                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.M)
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    requestPermissions(new String[]{CAMERA},
-                                                            REQUEST_CAMERA);
-                                                }
+                                                requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
                                             }
-                                        });
+                                        })
+                                        .setNegativeButton(R.string.cancel, null)
+                                        .create()
+                                        .show();
+
                                 return;
                             }
                         }
@@ -104,32 +137,23 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
     }
 
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new android.support.v7.app.AlertDialog.Builder(MainActivity.this)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancelar", null)
-                .create()
-                .show();
-    }
-
     @Override
     public void handleResult(Result result) {
-        final String myResult = result.getText();
+        // logging
         Log.d("QRCodeScanner", result.getText());
         Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Resultado");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                scannerView.resumeCameraPreview(MainActivity.this);
-            }
-        });
-
-        builder.setMessage(result.getText());
-        AlertDialog alert1 = builder.create();
-        alert1.show();
+        // dialog with result
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(R.string.result)
+                .setMessage(result.getText())
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        scannerView.resumeCameraPreview(MainActivity.this);
+                    }
+                })
+                .create()
+                .show();
     }
 }

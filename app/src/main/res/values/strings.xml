@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Wiim</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+    <string name="settings">Configurações</string>
+    <string name="result">Resultado</string>
+    <string name="point_to_scan">Aponte o celular para o QRCode</string>
+    <string name="permission_denied">Permissão negada, não é possivel acessar a câmera</string>
 </resources>
