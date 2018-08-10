@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -14,12 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
-
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
 import static android.Manifest.permission.CAMERA;
 
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
@@ -76,6 +76,25 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Floating action button on click event
+     * Turn flash light on/off
+     * @param view
+     */
+    public void flashToggleOnClick(View view) {
+        FloatingActionButton flashToggle = findViewById(R.id.flash_toggle);
+
+        if (scannerView.getFlash()) {
+            // turn off
+            scannerView.setFlash(false);
+            flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
+        } else {
+            // turn on
+            scannerView.setFlash(true);
+            flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
+        }
     }
 
     private boolean checkPermission() {
