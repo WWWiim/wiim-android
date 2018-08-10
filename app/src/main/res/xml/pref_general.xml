@@ -1,0 +1,32 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+
+    <PreferenceCategory android:title="@string/server">
+
+        <EditTextPreference
+            android:capitalize="none"
+            android:defaultValue="@string/pref_default_server_address"
+            android:inputType="text"
+            android:key="server_address"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_title_server_address" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/results">
+
+        <br.com.joseafga.wiim.NumberPickerPreference
+            android:defaultValue="1000"
+            android:key="update_interval"
+            android:title="@string/pref_title_update_interval"
+            android:summary="@string/pref_desc_update_interval" />
+    </PreferenceCategory>
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+
+</PreferenceScreen>

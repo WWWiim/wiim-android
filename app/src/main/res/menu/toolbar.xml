@@ -5,7 +5,7 @@
     <item
         android:title="Item2"
         android:id="@+id/ac_settings"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/ic_settings_white_24dp"
         app:showAsAction="always"/>
 
 </menu>
