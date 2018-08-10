@@ -1,4 +1,6 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto">
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
@@ -19,10 +21,13 @@
     <PreferenceCategory android:title="@string/results">
 
         <br.com.joseafga.wiim.NumberPickerPreference
-            android:defaultValue="1000"
+            android:defaultValue="10"
             android:key="update_interval"
             android:title="@string/pref_title_update_interval"
-            android:summary="@string/pref_desc_update_interval" />
+            android:summary="@string/pref_desc_update_interval"
+            custom:minValue="100"
+            custom:maxValue="10000"
+            custom:stepValue="100" />
     </PreferenceCategory>
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to

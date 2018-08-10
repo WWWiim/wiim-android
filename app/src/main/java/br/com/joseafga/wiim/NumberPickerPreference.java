@@ -16,9 +16,9 @@ import android.widget.NumberPicker;
 public class NumberPickerPreference extends DialogPreference {
 
     // allowed range
-    public static final int MAX_VALUE = 10000;
-    public static final int MIN_VALUE = 0;
-    public static final int STEP_VALUE = 100;
+    private int minValue = 0;
+    private int maxValue = 0;
+    private int stepValue = 1;
     // enable or disable the 'circular behavior'
     public static final boolean WRAP_SELECTOR_WHEEL = true;
 
@@ -27,10 +27,29 @@ public class NumberPickerPreference extends DialogPreference {
 
     public NumberPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        processXmlAttributes(context, attrs, 0);
     }
 
     public NumberPickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        processXmlAttributes(context, attrs, defStyleAttr);
+    }
+
+    /**
+     * This method reads the parameters given in the xml file and sets the properties according to it
+     */
+    private void processXmlAttributes(Context context, AttributeSet attrs, int defStyleAttr) {
+        TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.NumberPickerPreferences, defStyleAttr, 0);
+
+        try {
+            this.minValue = attributes.getInt(R.styleable.NumberPickerPreferences_minValue, minValue);
+            this.maxValue = attributes.getInt(R.styleable.NumberPickerPreferences_maxValue, maxValue);
+            this.stepValue = attributes.getInt(R.styleable.NumberPickerPreferences_stepValue, stepValue);
+        } finally {
+            attributes.recycle();
+        }
     }
 
     @Override
@@ -52,17 +71,20 @@ public class NumberPickerPreference extends DialogPreference {
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
 
+        // array length
+        int len = ((maxValue - minValue) / stepValue) + 1;
+
         // create array with right size
-        String[] valueSet = new String[(MAX_VALUE - MIN_VALUE) / STEP_VALUE + 1];
+        String[] valueSet = new String[len];
         // fill array with values
-        for (int i = MIN_VALUE; i <= MAX_VALUE; i += STEP_VALUE) {
-            valueSet[i/STEP_VALUE] = "" + i;
+        for (int i = 0; i < len; i++) {
+            valueSet[i] = String.valueOf(i * stepValue + minValue);
         }
 
         // set number picker settings
         picker.setDisplayedValues(valueSet);
-        picker.setMinValue(MIN_VALUE);
-        picker.setMaxValue(MAX_VALUE/STEP_VALUE);
+        picker.setMinValue(minValue / stepValue);
+        picker.setMaxValue(maxValue / stepValue);
         picker.setWrapSelectorWheel(WRAP_SELECTOR_WHEEL);
         picker.setValue(getValue());
     }
@@ -80,12 +102,12 @@ public class NumberPickerPreference extends DialogPreference {
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
-        return a.getInt(index, MIN_VALUE);
+        return a.getInt(index, minValue);
     }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        setValue(restorePersistedValue ? getPersistedInt(MIN_VALUE) : (Integer) defaultValue);
+        setValue(restorePersistedValue ? getPersistedInt(minValue) : (Integer) defaultValue);
     }
 
     public void setValue(int value) {
