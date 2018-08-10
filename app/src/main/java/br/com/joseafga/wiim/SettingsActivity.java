@@ -126,6 +126,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     /**
      * Inflate toolbar
+     *
      * @param menu
      * @return
      */

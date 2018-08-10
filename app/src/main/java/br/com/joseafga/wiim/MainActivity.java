@@ -19,7 +19,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
 import static android.Manifest.permission.CAMERA;
 
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     /**
      * Inflate toolbar
+     *
      * @param menu
      * @return
      */
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 startActivity(settings);
 
                 break;
-                // ?more options
+            // ?more options
         }
 
         return super.onOptionsItemSelected(item);
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     /**
      * Floating action button on click event
      * Turn flash light on/off
+     *
      * @param view
      */
     public void flashToggleOnClick(View view) {
