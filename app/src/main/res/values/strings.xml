@@ -40,6 +40,6 @@
     <string name="pref_url_visit_repo">https://bitbucket.org/mecatronica-assis/wiim-android</string>
     <string name="pref_title_copyright">Copyright © 2018</string>
     <string name="pref_title_contact">Contato</string>
-    <string name="pref_desc_contact">Entre em contato com o desenvolvedor</string>
+    <string name="pref_desc_contact">Entre em contato conosco</string>
     <string name="pref_mail_contact">mailto:jose.afga@gmail.com</string>
 </resources>
