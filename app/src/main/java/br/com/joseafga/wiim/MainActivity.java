@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         // set layout view
         setContentView(R.layout.activity_main);
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
         // scanner init
         scannerView = new ZXingScannerView(this);
@@ -51,16 +53,17 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     /**
-     * Inflate toolbar
+     * Inflate main
+     * add items to action bar
      *
      * @param menu
      * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar, menu);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
 
-        //return super.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -70,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         switch (id) {
             case R.id.ac_settings:
-                //Toast.makeText(this, R.string.settings, Toast.LENGTH_SHORT).show();
                 Intent settings = new Intent(this, SettingsActivity.class);
                 startActivity(settings);
 

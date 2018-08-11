@@ -7,10 +7,13 @@
         <item name="colorPrimary">@color/primary</item>
     </style>
 
-    <style name="Wiim.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
+    <style name="Wiim.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="Wiim.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Wiim.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

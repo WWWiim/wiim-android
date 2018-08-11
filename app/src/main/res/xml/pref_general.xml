@@ -20,6 +20,7 @@
 
     <PreferenceCategory android:title="@string/results">
 
+        <!--defaultValue=x*stepValue -->
         <br.com.joseafga.wiim.NumberPickerPreference
             android:defaultValue="10"
             android:key="update_interval"

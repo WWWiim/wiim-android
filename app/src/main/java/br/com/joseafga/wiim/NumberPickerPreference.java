@@ -19,8 +19,9 @@ public class NumberPickerPreference extends DialogPreference {
     private int minValue = 0;
     private int maxValue = 0;
     private int stepValue = 1;
+    private String[] valueSet = null;
     // enable or disable the 'circular behavior'
-    public static final boolean WRAP_SELECTOR_WHEEL = true;
+    private static final boolean WRAP_SELECTOR_WHEEL = true;
 
     private NumberPicker picker;
     private int value;
@@ -75,7 +76,7 @@ public class NumberPickerPreference extends DialogPreference {
         int len = ((maxValue - minValue) / stepValue) + 1;
 
         // create array with right size
-        String[] valueSet = new String[len];
+        valueSet = new String[len];
         // fill array with values
         for (int i = 0; i < len; i++) {
             valueSet[i] = String.valueOf(i * stepValue + minValue);
@@ -86,7 +87,7 @@ public class NumberPickerPreference extends DialogPreference {
         picker.setMinValue(minValue / stepValue);
         picker.setMaxValue(maxValue / stepValue);
         picker.setWrapSelectorWheel(WRAP_SELECTOR_WHEEL);
-        picker.setValue(getValue());
+        picker.setValue(value);
     }
 
     @Override
@@ -108,6 +109,10 @@ public class NumberPickerPreference extends DialogPreference {
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         setValue(restorePersistedValue ? getPersistedInt(minValue) : (Integer) defaultValue);
+    }
+
+    public String getDisplayedValue() {
+        return this.valueSet[this.value];
     }
 
     public void setValue(int value) {
