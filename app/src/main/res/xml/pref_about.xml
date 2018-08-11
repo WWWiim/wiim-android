@@ -29,6 +29,7 @@
 
     <Preference
         android:selectable="false"
+        android:summary="@string/pref_desc_copyright"
         android:title="@string/pref_title_copyright" />
 
 </PreferenceScreen>
