@@ -35,7 +35,7 @@
     <string name="pref_title_version">Versão Wiim</string>
     <string name="pref_desc_version">0.1.4-alpha</string>
     <string name="pref_title_contributors">Colaboradores</string>
-    <string name="pref_desc_contributors"><![CDATA[José Almeida \nAndreza Castillho Passos \nMatheus Figueiró da Costa]]></string>
+    <string name="pref_desc_contributors"><![CDATA[Andreza Castillho Passos \nJosé Almeida \nMatheus Figueiró da Costa \nRodrigo Amaro]]></string>
     <string name="pref_title_visit_repo">Visite o repositório do projeto</string>
     <string name="pref_url_visit_repo">https://bitbucket.org/mecatronica-assis/wiim-android</string>
     <string name="pref_title_copyright">Wiim Industrial Information Management</string>
