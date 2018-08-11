@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2018 José Almeida <jose.afga@gmail.com>
+ *
+ * https://creativecommons.org/licenses/by/4.0/
+ */
 package br.com.joseafga.wiim;
 
 import android.content.Context;
@@ -15,14 +20,13 @@ import android.widget.NumberPicker;
  */
 public class NumberPickerPreference extends DialogPreference {
 
+    // enable or disable the 'circular behavior'
+    private static final boolean WRAP_SELECTOR_WHEEL = true;
     // allowed range
     private int minValue = 0;
     private int maxValue = 0;
     private int stepValue = 1;
     private String[] valueSet = null;
-    // enable or disable the 'circular behavior'
-    private static final boolean WRAP_SELECTOR_WHEEL = true;
-
     private NumberPicker picker;
     private int value;
 
@@ -115,12 +119,12 @@ public class NumberPickerPreference extends DialogPreference {
         return this.valueSet[this.value];
     }
 
+    public int getValue() {
+        return this.value;
+    }
+
     public void setValue(int value) {
         this.value = value;
         persistInt(this.value);
-    }
-
-    public int getValue() {
-        return this.value;
     }
 }

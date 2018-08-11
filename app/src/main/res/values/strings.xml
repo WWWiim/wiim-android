@@ -11,7 +11,7 @@
 
     <!-- Strings related to Settings -->
 
-    <!-- Example General settings -->
+    <!-- General settings -->
     <string name="pref_header_general">Geral</string>
     <string name="server">Servidor</string>
 
@@ -21,11 +21,25 @@
     <string name="pref_title_update_interval">Intervalo de atualização</string>
     <string name="pref_desc_update_interval">Tempo em milissegundos com que as variáveis serão atualizadas.</string>
 
-    <!-- Example settings for Notifications -->
+    <!-- Notifications settings -->
     <string name="pref_header_notifications">Notificações</string>
 
     <string name="pref_title_enable_notifications">Habilitar notificações</string>
     <string name="pref_title_ringtone">Toque</string>
     <string name="pref_ringtone_silent">Silencioso</string>
     <string name="pref_title_vibrate">Vibrar</string>
+
+    <!-- About settings -->
+    <string name="pref_header_about">Sobre</string>
+
+    <string name="pref_title_version">Versão Wiim</string>
+    <string name="pref_desc_version">0.1.4-alpha</string>
+    <string name="pref_title_contributors">Colaboradores</string>
+    <string name="pref_desc_contributors"><![CDATA[José Almeida \nAndreza Castillho Passos \nMatheus Figueiró da Costa]]></string>
+    <string name="pref_title_visit_repo">Visite o repositório do projeto</string>
+    <string name="pref_url_visit_repo">https://bitbucket.org/mecatronica-assis/wiim-android</string>
+    <string name="pref_title_copyright">Copyright © 2018</string>
+    <string name="pref_title_contact">Contato</string>
+    <string name="pref_desc_contact">Entre em contato com o desenvolvedor</string>
+    <string name="pref_mail_contact">mailto:jose.afga@gmail.com</string>
 </resources>

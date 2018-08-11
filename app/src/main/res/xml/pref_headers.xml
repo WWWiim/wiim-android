@@ -4,12 +4,17 @@
 
     <header
         android:fragment="br.com.joseafga.wiim.SettingsActivity$GeneralPreferenceFragment"
-        android:icon="@drawable/ic_info_black_24dp"
+        android:icon="@drawable/ic_build_black_24dp"
         android:title="@string/pref_header_general" />
 
     <header
         android:fragment="br.com.joseafga.wiim.SettingsActivity$NotificationPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />
+
+    <header
+        android:fragment="br.com.joseafga.wiim.SettingsActivity$AboutPreferenceFragment"
+        android:icon="@drawable/ic_info_black_24dp"
+        android:title="@string/pref_header_about" />
 
 </preference-headers>

@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2018 José Almeida <jose.afga@gmail.com>
+ *
+ * https://creativecommons.org/licenses/by/4.0/
+ */
 package br.com.joseafga.wiim;
 
 import android.content.res.Configuration;
