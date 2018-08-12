@@ -3,9 +3,8 @@
  *
  * https://creativecommons.org/licenses/by/4.0/
  */
-package br.com.joseafga.wiim;
+package br.com.joseafga.wiim.helpers;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import br.com.joseafga.wiim.R;
 import br.com.joseafga.wiim.models.Tag;
 
 /**
@@ -33,7 +33,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
      * @param context Activity context
      * @param list    Tag list
      */
-    ResultAdapter(ArrayList<Tag> list) {
+    public ResultAdapter(ArrayList<Tag> list) {
         mList = list;
     }
 

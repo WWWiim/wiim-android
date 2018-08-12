@@ -3,7 +3,7 @@
  *
  * https://creativecommons.org/licenses/by/4.0/
  */
-package br.com.joseafga.wiim;
+package br.com.joseafga.wiim.helpers;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
+import br.com.joseafga.wiim.helpers.ResultAdapter;
 import br.com.joseafga.wiim.models.Tag;
 
 public class ResultActivity extends AppCompatActivity {

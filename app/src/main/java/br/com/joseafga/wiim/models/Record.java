@@ -12,7 +12,7 @@ public class Record {
     private int id = 0;
     private String time_opc = "";
     private String time_db = "";
-    private int value = 0;
+    private double value = 0;
     private String quality = "";
 
     public int getId() {
@@ -39,11 +39,11 @@ public class Record {
         this.time_db = time_db;
     }
 
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(double value) {
         this.value = value;
     }
 

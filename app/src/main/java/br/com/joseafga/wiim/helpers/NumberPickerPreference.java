@@ -3,7 +3,7 @@
  *
  * https://creativecommons.org/licenses/by/4.0/
  */
-package br.com.joseafga.wiim;
+package br.com.joseafga.wiim.helpers;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
+
+import br.com.joseafga.wiim.R;
 
 /**
  * A {@link android.preference.Preference} that displays a number picker as a dialog.
