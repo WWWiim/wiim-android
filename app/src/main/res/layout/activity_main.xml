@@ -32,7 +32,7 @@
             android:background="@color/primaryDark"
             android:gravity="center_horizontal"
             android:padding="10dp"
-            android:text="@string/point_to_scan"
+            android:text="@string/qrcode_point_to_scan"
             android:textColor="@color/primaryForeground"
             android:textSize="14sp"
             android:textStyle="normal" />

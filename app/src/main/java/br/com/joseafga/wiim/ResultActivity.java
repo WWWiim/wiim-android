@@ -5,10 +5,12 @@
  */
 package br.com.joseafga.wiim;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -101,7 +103,18 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     public void getProcessData() {
-        final Call<Process> getProcess = WiimApi.getService().getProcess("2656");
+        // Preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String serverAddress = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
+        // get update interval preference (multiply x100 to get in milliseconds)
+        Integer updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 0) * 100;
+
+        // Intent extras
+        Intent intent = getIntent();
+        String type = intent.getExtras().getString("type"); // process|tag
+        String id = intent.getExtras().getString("value"); // id
+
+        final Call<Process> getProcess = WiimApi.getService(serverAddress).getProcess(id);
         getProcess.enqueue(new Callback<Process>() {
             @Override
             public void onResponse(Call<Process> call, Response<Process> response) {
@@ -109,12 +122,22 @@ public class ResultActivity extends AppCompatActivity {
 
                 setAppBar(process.getName(), process.getComment(), process.getZone());
                 fetchTags(process.getTags());
-                Toast.makeText(ResultActivity.this, "Sucesso!!", Toast.LENGTH_LONG).show();
+                //Toast.makeText(ResultActivity.this, "Sucesso!!", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(Call<Process> call, Throwable t) {
-                Toast.makeText(ResultActivity.this, "Deu merda!!", Toast.LENGTH_LONG).show();
+                new AlertDialog.Builder(ResultActivity.this)
+                        .setTitle(R.string.error)
+                        .setMessage(t.getMessage())
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .create()
+                        .show();
             }
         });
     }

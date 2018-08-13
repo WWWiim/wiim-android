@@ -4,8 +4,10 @@
     <string name="cancel">Cancelar</string>
     <string name="result">Resultado</string>
     <string name="results">Resultados</string>
+    <string name="error">Erro</string>
     <string name="server">Servidor</string>
-    <string name="point_to_scan">Aponte o celular para o QRCode</string>
+    <string name="qrcode_point_to_scan">Aponte o celular para o QRCode</string>
+    <string name="qrcode_error">Erro de leitura ou QRCode inválido.\n\nLog:</string>
     <string name="permission_denied">Permissão negada, não é possivel acessar a câmera</string>
 
     <!-- Activities -->
@@ -16,7 +18,8 @@
     <string name="pref_header_general">Geral</string>
 
     <string name="pref_title_server_address">Endereço do servidor</string>
-    <string name="pref_default_server_address">192.168.0.1</string>
+    <string name="pref_default_server_address">http://192.168.0.1</string>
+    <string name="pref_invalid_url">URL inválida</string>
 
     <string name="pref_title_update_interval">Intervalo de atualização</string>
     <string name="pref_desc_update_interval">Tempo em milissegundos com que as variáveis serão atualizadas.</string>
@@ -33,7 +36,7 @@
     <string name="pref_header_about">Sobre</string>
 
     <string name="pref_title_version">Versão Wiim</string>
-    <string name="pref_desc_version">0.1.4-alpha</string>
+    <string name="pref_desc_version">0.2.0-alpha</string>
     <string name="pref_title_contributors">Colaboradores</string>
     <string name="pref_desc_contributors"><![CDATA[Andreza Castillho \nJosé Almeida \nMatheus Figueiró \nRodrigo Amaro]]></string>
     <string name="pref_title_visit_repo">Visite o repositório do projeto</string>

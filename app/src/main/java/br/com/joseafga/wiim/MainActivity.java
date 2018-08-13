@@ -25,6 +25,9 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
@@ -32,7 +35,8 @@ import static android.Manifest.permission.CAMERA;
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     private static final int REQUEST_CAMERA = 1;
-    private ZXingScannerView scannerView;
+    private static final Pattern QRPATTERN = Pattern.compile("^(process|tag):([0-9]+)$");
+    private ZXingScannerView mScannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +48,10 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         //setSupportActionBar(toolbar);
 
         // scanner init
-        scannerView = new ZXingScannerView(this);
+        mScannerView = new ZXingScannerView(this);
         ConstraintLayout lo = findViewById(R.id.scanner_view);
-        lo.addView(scannerView);
-        scannerView.setAutoFocus(true);
+        lo.addView(mScannerView);
+        mScannerView.setAutoFocus(true);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -97,13 +101,13 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     public void flashToggleOnClick(View view) {
         FloatingActionButton flashToggle = findViewById(R.id.flash_toggle);
 
-        if (scannerView.getFlash()) {
+        if (mScannerView.getFlash()) {
             // turn off
-            scannerView.setFlash(false);
+            mScannerView.setFlash(false);
             flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
         } else {
             // turn on
-            scannerView.setFlash(true);
+            mScannerView.setFlash(true);
             flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
         }
     }
@@ -122,12 +126,12 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
-                if (scannerView == null) {
-                    scannerView = new ZXingScannerView(this);
-                    setContentView(scannerView);
+                if (mScannerView == null) {
+                    mScannerView = new ZXingScannerView(this);
+                    setContentView(mScannerView);
                 }
-                scannerView.setResultHandler(this);
-                scannerView.startCamera();
+                mScannerView.setResultHandler(this);
+                mScannerView.startCamera();
             } else {
                 requestPermission();
             }
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     @Override
     public void onDestroy() {
         super.onDestroy();
-        scannerView.stopCamera();
+        mScannerView.stopCamera();
     }
 
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -175,20 +179,29 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     @Override
     public void handleResult(Result result) {
         // logging
-        Log.d("QRCodeScanner", result.getText());
         Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
+        // regex matches
+        Matcher matcher = QRPATTERN.matcher(result.getText());
 
-        // dialog with result
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle(R.string.result)
-                .setMessage(result.getText())
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        scannerView.resumeCameraPreview(MainActivity.this);
-                    }
-                })
-                .create()
-                .show();
+        if (matcher.matches()) {
+            // go to result activity
+            Intent intent = new Intent(this, ResultActivity.class);
+            intent.putExtra("type", matcher.group(1));
+            intent.putExtra("value", matcher.group(2));
+            startActivity(intent);
+        } else {
+            // dialog with result
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(R.string.error)
+                    .setMessage(getString(R.string.qrcode_error) + result.getText())
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mScannerView.resumeCameraPreview(MainActivity.this);
+                        }
+                    })
+                    .create()
+                    .show();
+        }
     }
 }

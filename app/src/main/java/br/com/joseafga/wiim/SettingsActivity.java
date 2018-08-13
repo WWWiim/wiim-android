@@ -24,6 +24,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.webkit.URLUtil;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -41,6 +43,9 @@ import br.com.joseafga.wiim.helpers.AppCompatPreferenceActivity;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
+    public static final String KEY_PREF_SERVER_ADDRESS = "server_address";
+    public static final String KEY_PREF_UPDATE_INTERVAL = "update_interval";
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -90,6 +95,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 // simple string representation.
                 preference.setSummary(stringValue);
             }
+
             return true;
         }
     };
@@ -197,7 +203,28 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("server_address"));
+            bindPreferenceSummaryToValue(findPreference(KEY_PREF_SERVER_ADDRESS));
+
+            // URL validation
+            findPreference(KEY_PREF_SERVER_ADDRESS).setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener() {
+
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
+                            if (URLUtil.isValidUrl((String) newValue)) {
+                                // keeps updating summary after override
+                                sBindPreferenceSummaryToValueListener.onPreferenceChange(findPreference(KEY_PREF_SERVER_ADDRESS), newValue);
+
+                                return true;
+                            }
+
+                            // information about invalid URL
+                            Toast.makeText(getActivity(), R.string.pref_invalid_url, Toast.LENGTH_LONG).show();
+
+                            return false;
+                        }
+
+                    });
         }
 
         @Override
