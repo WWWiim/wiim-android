@@ -43,15 +43,17 @@
                 android:paddingTop="80dp">
 
                 <TextView
+                    android:id="@+id/process_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Processo descrição"
+                    android:text="Process comment"
                     android:textSize="@dimen/text_mid" />
 
                 <TextView
+                    android:id="@+id/process_zone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="zona tal tal tal"
+                    android:text="Zone"
                     android:textSize="@dimen/text_normal" />
             </LinearLayout>
 

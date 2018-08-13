@@ -6,23 +6,31 @@
 package br.com.joseafga.wiim;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import br.com.joseafga.wiim.helpers.ResultAdapter;
+import br.com.joseafga.wiim.models.Process;
 import br.com.joseafga.wiim.models.Tag;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ResultActivity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
-    ArrayList<Tag> tagsList;
+    public RecyclerView recyclerView;
+    protected Process process;
+    protected ArrayList<Tag> tagsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,50 +46,7 @@ public class ResultActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // set process title
-        getSupportActionBar().setTitle("Process X");
-
-        Tag tag1 = new Tag();
-        tag1.setDescription("Tag 1 Description");
-        tag1.setComment("Tag 1 Comment");
-
-        Tag tag2 = new Tag();
-        tag2.setDescription("Taguinha 2 Description");
-        tag2.setComment("Taguinha 2 Comment");
-
-        Tag tag3 = new Tag();
-        tag3.setDescription("Tag 1 Description");
-        tag3.setComment("Tag 1 Comment");
-
-        Tag tag4 = new Tag();
-        tag4.setDescription("Tag 1 Description");
-        tag4.setComment("Tag 1 Comment");
-
-        Tag tag5 = new Tag();
-        tag5.setDescription("Tag 1 Description");
-        tag5.setComment("Tag 1 Comment");
-
-        tagsList = new ArrayList<>();
-        tagsList.add(tag1);
-        tagsList.add(tag2);
-        tagsList.add(tag3);
-        tagsList.add(tag4);
-        tagsList.add(tag5);
-        tagsList.add(tag1);
-        tagsList.add(tag2);
-        tagsList.add(tag3);
-        tagsList.add(tag4);
-        tagsList.add(tag5);
-
-        // set recycler view layout manager
-        recyclerView = findViewById(R.id.recycler_view);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-
-        recyclerView.setLayoutManager(layoutManager);
-
-        ResultAdapter adapter = new ResultAdapter(tagsList);
-
-        recyclerView.setAdapter(adapter);
+        getProcessData();
     }
 
     @Override
@@ -108,5 +73,49 @@ public class ResultActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void fetchTags(ArrayList<Tag> tagsList) {
+        // set recycler view layout manager
+        recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
+        recyclerView.setLayoutManager(layoutManager);
+
+        ResultAdapter adapter = new ResultAdapter(tagsList);
+
+        recyclerView.setAdapter(adapter);
+    }
+
+    public void setAppBar(String title, String comment, String zone){
+        // set process title
+        //ResultActivity.actionBar.setTitle(title);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
+        // get resources layout
+        TextView processSummary = findViewById(R.id.process_summary);
+        TextView processZone = findViewById(R.id.process_zone);
+        // set values
+        processSummary.setText(comment);
+        processZone.setText(zone);
+    }
+
+    public void getProcessData() {
+        final Call<Process> getProcess = WiimApi.getService().getProcess("2656");
+        getProcess.enqueue(new Callback<Process>() {
+            @Override
+            public void onResponse(Call<Process> call, Response<Process> response) {
+                process = response.body();
+
+                setAppBar(process.getName(), process.getComment(), process.getZone());
+                fetchTags(process.getTags());
+                Toast.makeText(ResultActivity.this, "Sucesso!!", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<Process> call, Throwable t) {
+                Toast.makeText(ResultActivity.this, "Deu merda!!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

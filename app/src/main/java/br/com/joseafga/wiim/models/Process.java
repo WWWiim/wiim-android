@@ -11,9 +11,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 /**
- * This class represents Tag Model
+ * This class represents Process Model
  */
-public class Tag {
+public class Process {
 
     @SerializedName("id")
     @Expose
@@ -21,21 +21,15 @@ public class Tag {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("alias")
-    @Expose
-    private String alias;
     @SerializedName("comment")
     @Expose
     private String comment;
-    @SerializedName("unit")
+    @SerializedName("zone")
     @Expose
-    private String unit;
-    @SerializedName("status")
+    private String zone;
+    @SerializedName("tags")
     @Expose
-    private Double status;
-    @SerializedName("records")
-    @Expose
-    private ArrayList<Record> records = null;
+    private ArrayList<Tag> tags = null;
 
     public Integer getId() {
         return id;
@@ -53,14 +47,6 @@ public class Tag {
         this.name = name;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
     public String getComment() {
         return comment;
     }
@@ -69,28 +55,20 @@ public class Tag {
         this.comment = comment;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getZone() {
+        return zone;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setZone(String zone) {
+        this.zone = zone;
     }
 
-    public Double getStatus() {
-        return status;
+    public ArrayList<Tag> getTags() {
+        return tags;
     }
 
-    public void setStatus(Double status) {
-        this.status = status;
-    }
-
-    public ArrayList<Record> getRecords() {
-        return records;
-    }
-
-    public void setRecords(ArrayList<Record> records) {
-        this.records = records;
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
     }
 
 }

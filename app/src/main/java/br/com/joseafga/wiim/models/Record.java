@@ -5,45 +5,59 @@
  */
 package br.com.joseafga.wiim.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
- * This class represents Records Model
+ * This class represents Record Model
  */
 public class Record {
-    private int id = 0;
-    private String time_opc = "";
-    private String time_db = "";
-    private double value = 0;
-    private String quality = "";
 
-    public int getId() {
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("time_opc")
+    @Expose
+    private String timeOpc;
+    @SerializedName("time_db")
+    @Expose
+    private String timeDb;
+    @SerializedName("value")
+    @Expose
+    private Double value;
+    @SerializedName("quality")
+    @Expose
+    private String quality;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getTime_opc() {
-        return time_opc;
+    public String getTimeOpc() {
+        return timeOpc;
     }
 
-    public void setTime_opc(String time_opc) {
-        this.time_opc = time_opc;
+    public void setTimeOpc(String timeOpc) {
+        this.timeOpc = timeOpc;
     }
 
-    public String getTime_db() {
-        return time_db;
+    public String getTimeDb() {
+        return timeDb;
     }
 
-    public void setTime_db(String time_db) {
-        this.time_db = time_db;
+    public void setTimeDb(String timeDb) {
+        this.timeDb = timeDb;
     }
 
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
@@ -54,4 +68,5 @@ public class Record {
     public void setQuality(String quality) {
         this.quality = quality;
     }
+
 }
