@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,8 +18,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -30,9 +32,10 @@ import retrofit2.Response;
 
 public class ResultActivity extends AppCompatActivity {
 
-    public RecyclerView recyclerView;
-    protected Process process;
-    protected ArrayList<Tag> tagsList;
+    public RecyclerView mRecyclerView;
+    public Process mProcess;
+    protected ProgressBar mProgressBar;
+    protected ArrayList<Tag> mTagsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,9 @@ public class ResultActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+
+        // get progress bar widget
+        mProgressBar = findViewById(R.id.loading_spinner);
 
         getProcessData();
     }
@@ -79,21 +85,19 @@ public class ResultActivity extends AppCompatActivity {
 
     public void fetchTags(ArrayList<Tag> tagsList) {
         // set recycler view layout manager
-        recyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView = findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
-        recyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         ResultAdapter adapter = new ResultAdapter(tagsList);
 
-        recyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(adapter);
     }
 
     public void setAppBar(String title, String comment, String zone){
         // set process title
-        //ResultActivity.actionBar.setTitle(title);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(title);
+
         // get resources layout
         TextView processSummary = findViewById(R.id.process_summary);
         TextView processZone = findViewById(R.id.process_zone);
@@ -118,11 +122,14 @@ public class ResultActivity extends AppCompatActivity {
         getProcess.enqueue(new Callback<Process>() {
             @Override
             public void onResponse(Call<Process> call, Response<Process> response) {
-                process = response.body();
+                mProcess = response.body();
 
-                setAppBar(process.getName(), process.getComment(), process.getZone());
-                fetchTags(process.getTags());
+                setAppBar(mProcess.getName(), mProcess.getComment(), mProcess.getZone());
+                fetchTags(mProcess.getTags());
                 //Toast.makeText(ResultActivity.this, "Sucesso!!", Toast.LENGTH_LONG).show();
+
+                // All done, remove progress bar
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
