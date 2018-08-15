@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     private static final int REQUEST_CAMERA = 1;
     private static final Pattern QRPATTERN = Pattern.compile("^(process|tag):([0-9]+)$");
-    private ZXingScannerView mScannerView;
+    protected FloatingActionButton flashToggle;
+    protected ZXingScannerView mScannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,23 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         lo.addView(mScannerView);
         mScannerView.setAutoFocus(true);
 
+        // floating action button on click event (flash on/off)
+        flashToggle = findViewById(R.id.flash_toggle);
+        flashToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mScannerView.getFlash()) {
+                    // turn off
+                    mScannerView.setFlash(false);
+                    flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
+                } else {
+                    // turn on
+                    mScannerView.setFlash(true);
+                    flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
+                }
+            }
+        });
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!checkPermission()) {
@@ -62,13 +80,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
     }
 
-    /**
-     * Inflate main
-     * add items to action bar
-     *
-     * @param menu
-     * @return
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -94,26 +105,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Floating action button on click event
-     * Turn flash light on/off
-     *
-     * @param view
-     */
-    public void flashToggleOnClick(View view) {
-        FloatingActionButton flashToggle = findViewById(R.id.flash_toggle);
-
-        if (mScannerView.getFlash()) {
-            // turn off
-            mScannerView.setFlash(false);
-            flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
-        } else {
-            // turn on
-            mScannerView.setFlash(true);
-            flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
-        }
     }
 
     private boolean checkPermission() {

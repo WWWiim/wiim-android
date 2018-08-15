@@ -55,7 +55,6 @@
         android:layout_margin="@dimen/spacing_mid"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="flashToggleOnClick"
         app:backgroundTint="@color/primary"
         app:srcCompat="@drawable/ic_flash_on_white_24dp" />
 
