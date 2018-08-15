@@ -36,7 +36,6 @@ import retrofit2.Response;
 public class ResultActivity extends AppCompatActivity {
 
     public RecyclerView mRecyclerView;
-    public Process mProcess;
     protected CollapsingToolbarLayout mCollapsingToolbar;
     protected ProgressBar mProgressBar;
     protected ArrayList<Tag> mTagsList;
@@ -62,7 +61,7 @@ public class ResultActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.loading_spinner);
         mCollapsingToolbar = findViewById(R.id.collapsing_toolbar);
 
-        getProcessData();
+        getData();
     }
 
     @Override
@@ -115,7 +114,7 @@ public class ResultActivity extends AppCompatActivity {
         processZone.setText(zone);
     }
 
-    public void getProcessData() {
+    public void getData() {
         // Preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String serverAddress = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
@@ -126,15 +125,58 @@ public class ResultActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String[] scanned = intent.getExtras().getStringArray("scanned"); // process|tag, id
 
-        final Call<Process> getProcess = WiimApi.getService(serverAddress).getProcess(scanned[1]);
+        if (scanned[0].equals("process")) {
+            getProcessData(serverAddress, scanned[1]);
+        } else {
+            getTagData(serverAddress, scanned[1]);
+        }
+    }
+
+    public void getTagData(String apiUrl, String id) {
+        final Call<Tag> getTag = WiimApi.getService(apiUrl).getTags(id);
+
+        getTag.enqueue(new Callback<Tag>() {
+            @Override
+            public void onResponse(Call<Tag> call, Response<Tag> response) {
+                Tag tag = response.body();
+
+                setAppBar(tag.getAlias(), tag.getComment(), tag.getName());
+
+                ArrayList<Tag> tagsList = new ArrayList<Tag>();
+                tagsList.add(tag);
+                fetchTags(tagsList);
+
+                // All done, remove progress bar
+                mProgressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<Tag> call, Throwable t) {
+                new AlertDialog.Builder(ResultActivity.this)
+                        .setTitle(R.string.error)
+                        .setMessage(t.getMessage())
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+        });
+    }
+
+    public void getProcessData(String apiUrl, String id) {
+        final Call<Process> getProcess = WiimApi.getService(apiUrl).getProcess(id);
 
         getProcess.enqueue(new Callback<Process>() {
             @Override
             public void onResponse(Call<Process> call, Response<Process> response) {
-                mProcess = response.body();
+                Process process = response.body();
 
-                setAppBar(mProcess.getName(), mProcess.getComment(), mProcess.getZone());
-                fetchTags(mProcess.getTags());
+                setAppBar(process.getName(), process.getComment(), process.getZone());
+                fetchTags(process.getTags());
 
                 // All done, remove progress bar
                 mProgressBar.setVisibility(View.GONE);
@@ -142,9 +184,6 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Process> call, Throwable t) {
-
-                getSupportActionBar().setTitle("falhou");
-
                 new AlertDialog.Builder(ResultActivity.this)
                         .setTitle(R.string.error)
                         .setMessage(t.getMessage())

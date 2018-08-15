@@ -1,6 +1,7 @@
 package br.com.joseafga.wiim;
 
 import br.com.joseafga.wiim.models.Process;
+import br.com.joseafga.wiim.models.Tag;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -11,14 +12,15 @@ public class WiimApi {
     // for future implementation
     private static final String API_KEY = "xyz";
 
-    // http://www.joseafga.com.br/wiim/api/v1/processes/:id
     public interface WiimService {
+        // http://www.joseafga.com.br/wiim/api/v1/processes/:id
         @GET("processes/{id}")
         Call<Process> getProcess(@Path("id") String id);
-    }
 
-    // http://www.joseafga.com.br/wiim/api/v1/tags/:id
-    // TODO
+        // http://www.joseafga.com.br/wiim/api/v1/tags/:id
+        @GET("tags/{id}")
+        Call<Tag> getTags(@Path("id") String id);
+    }
 
     public static WiimService getService(String url) {
         // Create a very simple REST adapter which points the Wiim API.
