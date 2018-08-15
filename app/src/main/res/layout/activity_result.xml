@@ -35,6 +35,7 @@
         android:theme="@style/Wiim.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
@@ -63,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="95dp"
-                    android:text="128 bytes summary"
+                    android:text="120 bytes summary"
                     android:textSize="16sp"
                     app:layout_constraintTop_toTopOf="parent" />
 

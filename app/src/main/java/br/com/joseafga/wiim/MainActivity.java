@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         // set layout view
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // scanner init
         mScannerView = new ZXingScannerView(this);
@@ -78,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         switch (id) {
@@ -186,8 +190,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         if (matcher.matches()) {
             // go to result activity
             Intent intent = new Intent(this, ResultActivity.class);
-            intent.putExtra("type", matcher.group(1));
-            intent.putExtra("value", matcher.group(2));
+            intent.putExtra("scanned", new String[]{matcher.group(1), matcher.group(2)});
             startActivity(intent);
         } else {
             // dialog with result

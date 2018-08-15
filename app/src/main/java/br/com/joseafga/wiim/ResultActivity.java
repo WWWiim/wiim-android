@@ -5,17 +5,20 @@
  */
 package br.com.joseafga.wiim;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,15 +37,19 @@ public class ResultActivity extends AppCompatActivity {
 
     public RecyclerView mRecyclerView;
     public Process mProcess;
+    protected CollapsingToolbarLayout mCollapsingToolbar;
     protected ProgressBar mProgressBar;
     protected ArrayList<Tag> mTagsList;
+
+    protected ResultActivity resultActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // set layout view
         setContentView(R.layout.activity_result);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
@@ -53,6 +60,7 @@ public class ResultActivity extends AppCompatActivity {
 
         // get progress bar widget
         mProgressBar = findViewById(R.id.loading_spinner);
+        mCollapsingToolbar = findViewById(R.id.collapsing_toolbar);
 
         getProcessData();
     }
@@ -97,6 +105,7 @@ public class ResultActivity extends AppCompatActivity {
 
     public void setAppBar(String title, String comment, String zone){
         // set process title
+        mCollapsingToolbar.setTitle(title);
 
         // get resources layout
         TextView processSummary = findViewById(R.id.process_summary);
@@ -115,10 +124,10 @@ public class ResultActivity extends AppCompatActivity {
 
         // Intent extras
         Intent intent = getIntent();
-        String type = intent.getExtras().getString("type"); // process|tag
-        String id = intent.getExtras().getString("value"); // id
+        String[] scanned = intent.getExtras().getStringArray("scanned"); // process|tag, id
 
-        final Call<Process> getProcess = WiimApi.getService(serverAddress).getProcess(id);
+        final Call<Process> getProcess = WiimApi.getService(serverAddress).getProcess(scanned[1]);
+
         getProcess.enqueue(new Callback<Process>() {
             @Override
             public void onResponse(Call<Process> call, Response<Process> response) {
@@ -126,7 +135,6 @@ public class ResultActivity extends AppCompatActivity {
 
                 setAppBar(mProcess.getName(), mProcess.getComment(), mProcess.getZone());
                 fetchTags(mProcess.getTags());
-                //Toast.makeText(ResultActivity.this, "Sucesso!!", Toast.LENGTH_LONG).show();
 
                 // All done, remove progress bar
                 mProgressBar.setVisibility(View.GONE);
@@ -134,6 +142,9 @@ public class ResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Process> call, Throwable t) {
+
+                getSupportActionBar().setTitle("falhou");
+
                 new AlertDialog.Builder(ResultActivity.this)
                         .setTitle(R.string.error)
                         .setMessage(t.getMessage())

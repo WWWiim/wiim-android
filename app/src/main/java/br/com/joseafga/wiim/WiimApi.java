@@ -11,13 +11,17 @@ public class WiimApi {
     // for future implementation
     private static final String API_KEY = "xyz";
 
+    // http://www.joseafga.com.br/wiim/api/v1/processes/:id
     public interface WiimService {
         @GET("processes/{id}")
         Call<Process> getProcess(@Path("id") String id);
     }
 
+    // http://www.joseafga.com.br/wiim/api/v1/tags/:id
+    // TODO
+
     public static WiimService getService(String url) {
-        // Create a very simple REST adapter which points the GitHub API.
+        // Create a very simple REST adapter which points the Wiim API.
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
