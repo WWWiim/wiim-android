@@ -5,20 +5,18 @@
  */
 package br.com.joseafga.wiim;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,11 +34,14 @@ import retrofit2.Response;
 public class ResultActivity extends AppCompatActivity {
 
     public RecyclerView mRecyclerView;
+    protected ResultAdapter mResultAdapter;
     protected CollapsingToolbarLayout mCollapsingToolbar;
     protected ProgressBar mProgressBar;
-    protected ArrayList<Tag> mTagsList;
-
-    protected ResultActivity resultActivity;
+    // preferences
+    protected String apiUrl;
+    protected Integer updateInterval;
+    // QRCode result (process|tag, id)
+    protected String[] qrData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +58,12 @@ public class ResultActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // get progress bar widget
+        // set views
         mProgressBar = findViewById(R.id.loading_spinner);
         mCollapsingToolbar = findViewById(R.id.collapsing_toolbar);
+        mRecyclerView = findViewById(R.id.recycler_view);
+        // get intent extras from main activity
+        qrData = getIntent().getExtras().getStringArray("QRData");
 
         getData();
     }
@@ -90,19 +94,13 @@ public class ResultActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void fetchTags(ArrayList<Tag> tagsList) {
-        // set recycler view layout manager
-        mRecyclerView = findViewById(R.id.recycler_view);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        ResultAdapter adapter = new ResultAdapter(tagsList);
-
-        mRecyclerView.setAdapter(adapter);
-    }
-
-    public void setAppBar(String title, String comment, String zone){
+    /**
+     * Set Collapsing toolbar texts
+     * @param title
+     * @param comment
+     * @param zone
+     */
+    public void setToolbarTexts(String title, String comment, String zone){
         // set process title
         mCollapsingToolbar.setTitle(title);
 
@@ -114,88 +112,99 @@ public class ResultActivity extends AppCompatActivity {
         processZone.setText(zone);
     }
 
-    public void getData() {
-        // Preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String serverAddress = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
-        // get update interval preference (multiply x100 to get in milliseconds)
-        Integer updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 0) * 100;
+    public void updateDelayed(ArrayList<Tag> tagsList) {
+        final Handler handler = new Handler();
 
-        // Intent extras
-        Intent intent = getIntent();
-        String[] scanned = intent.getExtras().getStringArray("scanned"); // process|tag, id
+        // All done, remove progress bar
+        mProgressBar.setVisibility(View.GONE);
 
-        if (scanned[0].equals("process")) {
-            getProcessData(serverAddress, scanned[1]);
+        // Fetch TAGs
+        if (mResultAdapter == null) {
+            // set layout manager
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+            mResultAdapter = new ResultAdapter(tagsList);
+            mRecyclerView.setAdapter(mResultAdapter);
         } else {
-            getTagData(serverAddress, scanned[1]);
+            mResultAdapter.updateList(tagsList);
+        }
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                try {
+                    // get data to update process
+                    getData();
+                } catch (Exception e) {
+                    // alert dialog if error occurs
+                    onErrorAlert(e.getMessage());
+                }
+            }
+        }, updateInterval);
+    }
+
+    public void getData() {
+        // Update preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
+        updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 0) * 100; // multiply x100 to get real milliseconds
+
+        // API calls
+        if (qrData[0].equals("process")) {
+            WiimApi.getService(apiUrl).getProcess(qrData[1]).enqueue(new Callback<Process>() {
+                @Override
+                public void onResponse(Call<Process> call, Response<Process> response) {
+                    Process process = response.body();
+
+                    setToolbarTexts(process.getName(), process.getComment(), process.getZone());
+                    // recall
+                    updateDelayed(process.getTags());
+                }
+
+                @Override
+                public void onFailure(Call<Process> call, Throwable t) {
+                    onErrorAlert(t.getMessage());
+                }
+            });
+
+        } else {
+            WiimApi.getService(apiUrl).getTags(qrData[1]).enqueue(new Callback<Tag>() {
+                @Override
+                public void onResponse(Call<Tag> call, Response<Tag> response) {
+                    Tag tag = response.body();
+
+                    setToolbarTexts(tag.getAlias(), tag.getComment(), tag.getName());
+
+                    // put tag in a array to adapter
+                    ArrayList<Tag> tagsList = new ArrayList<Tag>();
+                    tagsList.add(tag);
+                    // recall
+                    updateDelayed(tagsList);
+                }
+
+                @Override
+                public void onFailure(Call<Tag> call, Throwable t) {
+                    onErrorAlert(t.getMessage());
+                }
+            });
         }
     }
 
-    public void getTagData(String apiUrl, String id) {
-        final Call<Tag> getTag = WiimApi.getService(apiUrl).getTags(id);
-
-        getTag.enqueue(new Callback<Tag>() {
-            @Override
-            public void onResponse(Call<Tag> call, Response<Tag> response) {
-                Tag tag = response.body();
-
-                setAppBar(tag.getAlias(), tag.getComment(), tag.getName());
-
-                ArrayList<Tag> tagsList = new ArrayList<Tag>();
-                tagsList.add(tag);
-                fetchTags(tagsList);
-
-                // All done, remove progress bar
-                mProgressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(Call<Tag> call, Throwable t) {
-                new AlertDialog.Builder(ResultActivity.this)
-                        .setTitle(R.string.error)
-                        .setMessage(t.getMessage())
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .create()
-                        .show();
-            }
-        });
-    }
-
-    public void getProcessData(String apiUrl, String id) {
-        final Call<Process> getProcess = WiimApi.getService(apiUrl).getProcess(id);
-
-        getProcess.enqueue(new Callback<Process>() {
-            @Override
-            public void onResponse(Call<Process> call, Response<Process> response) {
-                Process process = response.body();
-
-                setAppBar(process.getName(), process.getComment(), process.getZone());
-                fetchTags(process.getTags());
-
-                // All done, remove progress bar
-                mProgressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(Call<Process> call, Throwable t) {
-                new AlertDialog.Builder(ResultActivity.this)
-                        .setTitle(R.string.error)
-                        .setMessage(t.getMessage())
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .create()
-                        .show();
-            }
-        });
+    /**
+     * Show errors alert dialog with message
+     *
+     * @param t
+     */
+    private void onErrorAlert(String msg){
+        new AlertDialog.Builder(ResultActivity.this)
+                .setTitle(R.string.error)
+                .setMessage(msg)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .create()
+                .show();
     }
 }

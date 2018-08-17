@@ -99,10 +99,21 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
         tagImage.setImageResource(imageRes);
         tagTitle.setText(tag.getAlias());
         tagSummary.setText(tag.getComment());
-        justify(tagSummary);
+        // ugly update when justify on
+        // justify(tagSummary);
         tagValue.setText(String.valueOf(rec.getValue()));
         tagUnit.setText(tag.getUnit());
         tagDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
+    }
+
+    /**
+     * Update Adapter list
+     * @param list
+     */
+    public void updateList(ArrayList<Tag> list) {
+        mList.clear();
+        mList.addAll(list);
+        notifyDataSetChanged();
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -117,11 +128,8 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
     public static void justify(final TextView textView) {
 
         final AtomicBoolean isJustify = new AtomicBoolean(false);
-
         final String textString = textView.getText().toString();
-
         final TextPaint textPaint = textView.getPaint();
-
         final SpannableStringBuilder builder = new SpannableStringBuilder();
 
         textView.post(new Runnable() {
@@ -173,5 +181,4 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
             }
         });
     }
-
 }

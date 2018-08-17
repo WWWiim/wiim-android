@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             }
         });
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!checkPermission()) {
                 requestPermission();
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         if (matcher.matches()) {
             // go to result activity
             Intent intent = new Intent(this, ResultActivity.class);
-            intent.putExtra("scanned", new String[]{matcher.group(1), matcher.group(2)});
+            intent.putExtra("QRData", new String[]{matcher.group(1), matcher.group(2)});
             startActivity(intent);
         } else {
             // dialog with result
