@@ -6,12 +6,15 @@
 
 package br.com.joseafga.wiim;
 
+import java.util.ArrayList;
+
 import br.com.joseafga.wiim.models.Process;
 import br.com.joseafga.wiim.models.Tag;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Path;
 
 public class WiimApi {
@@ -20,14 +23,17 @@ public class WiimApi {
 
     public interface WiimService {
         // http://www.joseafga.com.br/wiim/api/v1/processes/
+        @Headers("Accept: application/json")
         @GET("processes/")
-        Call<Process> getProcesses();
+        Call<ArrayList<Process>> getProcesses();
 
         // http://www.joseafga.com.br/wiim/api/v1/processes/:id
+        @Headers("Accept: application/json")
         @GET("processes/{id}")
         Call<Process> getProcess(@Path("id") String id);
 
         // http://www.joseafga.com.br/wiim/api/v1/tags/:id
+        @Headers("Accept: application/json")
         @GET("tags/{id}")
         Call<Tag> getTags(@Path("id") String id);
     }
