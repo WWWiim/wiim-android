@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 
+import java.util.ArrayList;
+
 import br.com.joseafga.wiim.helpers.VerticalViewPager;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -51,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the adapter that will return a fragment for each of the three
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        // Add fragments to view pager
+        mSectionsPagerAdapter.addItem(new ScanFragment());
+        mSectionsPagerAdapter.addItem(new ProcessesFragment());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
@@ -90,25 +95,26 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        public void addItem(Fragment fragment) {
+            fragments.add(fragment);
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            if (position == 0) {
-                return new ScanFragment();
-            } else {
-                return new ProcessesFragment();
-            }
+            return fragments.get(position);
         }
 
         @Override
         public int getCount() {
-            // Show 2 total pages.
-            return 2;
+            // Show total pages.
+            return fragments.size();
         }
     }
 }
