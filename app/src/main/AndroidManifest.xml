@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Wiim">
         <activity
-            android:name=".ScanActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Wiim.NoActionBar">
             <intent-filter>
@@ -28,19 +28,19 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".ScanActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="br.com.joseafga.wiim.ScanActivity" />
+                android:value="br.com.joseafga.wiim.MainActivity" />
         </activity>
         <activity
             android:name=".ResultActivity"
             android:label="@string/title_activity_result"
-            android:parentActivityName=".ScanActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/Wiim.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="br.com.joseafga.wiim.ScanActivity" />
+                android:value="br.com.joseafga.wiim.MainActivity" />
         </activity>
     </application>
 
