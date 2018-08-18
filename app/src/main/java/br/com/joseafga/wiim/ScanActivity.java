@@ -33,7 +33,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+public class ScanActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     private static final int REQUEST_CAMERA = 1;
     private static final Pattern QRPATTERN = Pattern.compile("^(process|tag):([0-9]+)$");
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         super.onCreate(savedInstanceState);
 
         // set layout view
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_scan);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                         Toast.makeText(getApplicationContext(), R.string.permission_denied, Toast.LENGTH_LONG).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             if (shouldShowRequestPermissionRationale(CAMERA)) {
-                                new AlertDialog.Builder(MainActivity.this)
+                                new AlertDialog.Builder(ScanActivity.this)
                                         .setMessage("É necessário conceder as permissões de acesso")
                                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -184,13 +184,13 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             startActivity(intent);
         } else {
             // dialog with result
-            new AlertDialog.Builder(MainActivity.this)
+            new AlertDialog.Builder(ScanActivity.this)
                     .setTitle(R.string.error)
                     .setMessage(getString(R.string.qrcode_error) + result.getText())
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mScannerView.resumeCameraPreview(MainActivity.this);
+                            mScannerView.resumeCameraPreview(ScanActivity.this);
                         }
                     })
                     .create()
