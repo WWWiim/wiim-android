@@ -28,7 +28,7 @@ import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
 
 /**
- * This class is ...
+ * This class adapt Tag objects from ArrayList to CardView layout
  */
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
@@ -40,9 +40,9 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
      * Class Constructor
      * Provide a suitable constructor
      *
-     * @param list    Tag list
+     * @param list Tag list
      */
-    public TagAdapter(ArrayList<Tag> list) {
+    private TagAdapter(ArrayList<Tag> list) {
         mList = list;
     }
 
@@ -70,7 +70,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.result_tag, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tag_item, parent, false);
 
         return new ViewHolder(view);
     }
@@ -92,9 +92,9 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         tagDate = holder.tagDate;
 
         // set face according to the status
-        if (tag.getStatus() < 2.5) imageRes = R.drawable.ic_tag_faces_unhappy_24dp;
-        else if (tag.getStatus() > 4) imageRes = R.drawable.ic_tag_faces_neutral_24dp;
-        else imageRes = R.drawable.ic_tag_faces_happy_24dp;
+        if (tag.getStatus() < 2.5) imageRes = R.drawable.ic_faces_unhappy_24dp;
+        else if (tag.getStatus() > 4) imageRes = R.drawable.ic_faces_neutral_24dp;
+        else imageRes = R.drawable.ic_faces_happy_24dp;
 
         tagImage.setImageResource(imageRes);
         tagTitle.setText(tag.getAlias());
@@ -103,14 +103,14 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         // justify(tagSummary);
         tagValue.setText(String.valueOf(rec.getValue()));
         tagUnit.setText(tag.getUnit());
-        // TODO green if quality is good
+        // TODO: green if quality is good
         // tagQuality.setColorFilter(0xffff0000)
         tagDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
     }
 
     /**
      * Update Adapter list
-     * @param list
+     * @param list List with Tags
      */
     public void updateList(ArrayList<Tag> list) {
         mList.clear();
