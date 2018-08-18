@@ -51,18 +51,18 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView tagImage;
-        TextView tagTitle, tagSummary, tagValue, tagUnit, tagDate;
+        ImageView itemImage;
+        TextView itemTitle, itemSummary, itemValue, itemUnit, itemDate;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            tagImage = itemView.findViewById(R.id.tag_image);
-            tagTitle = itemView.findViewById(R.id.tag_title);
-            tagSummary = itemView.findViewById(R.id.tag_summary);
-            tagValue = itemView.findViewById(R.id.tag_value);
-            tagUnit = itemView.findViewById(R.id.tag_unit);
-            tagDate = itemView.findViewById(R.id.tag_date);
+            itemImage = itemView.findViewById(R.id.item_image);
+            itemTitle = itemView.findViewById(R.id.item_title);
+            itemSummary = itemView.findViewById(R.id.item_summary);
+            itemValue = itemView.findViewById(R.id.item_value);
+            itemUnit = itemView.findViewById(R.id.item_unit);
+            itemDate = itemView.findViewById(R.id.item_date);
         }
     }
 
@@ -80,32 +80,32 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Tag tag = mList.get(position);
         Record rec = tag.getRecords().get(0);
-        ImageView tagImage;
-        TextView tagTitle, tagSummary, tagValue, tagUnit, tagDate;
+        ImageView itemImage;
+        TextView itemTitle, itemSummary, itemValue, itemUnit, itemDate;
 
         int imageRes;
-        tagImage = holder.tagImage;
-        tagTitle = holder.tagTitle;
-        tagSummary = holder.tagSummary;
-        tagValue = holder.tagValue;
-        tagUnit = holder.tagUnit;
-        tagDate = holder.tagDate;
+        itemImage = holder.itemImage;
+        itemTitle = holder.itemTitle;
+        itemSummary = holder.itemSummary;
+        itemValue = holder.itemValue;
+        itemUnit = holder.itemUnit;
+        itemDate = holder.itemDate;
 
         // set face according to the status
         if (tag.getStatus() < 2.5) imageRes = R.drawable.ic_faces_unhappy_24dp;
         else if (tag.getStatus() > 4) imageRes = R.drawable.ic_faces_neutral_24dp;
         else imageRes = R.drawable.ic_faces_happy_24dp;
 
-        tagImage.setImageResource(imageRes);
-        tagTitle.setText(tag.getAlias());
-        tagSummary.setText(tag.getComment());
+        itemImage.setImageResource(imageRes);
+        itemTitle.setText(tag.getAlias());
+        itemSummary.setText(tag.getComment());
         // ugly update when justify on
-        // justify(tagSummary);
-        tagValue.setText(String.valueOf(rec.getValue()));
-        tagUnit.setText(tag.getUnit());
+        // justify(itemSummary);
+        itemValue.setText(String.valueOf(rec.getValue()));
+        itemUnit.setText(tag.getUnit());
         // TODO: green if quality is good
-        // tagQuality.setColorFilter(0xffff0000)
-        tagDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
+        // itemQuality.setColorFilter(0xffff0000)
+        itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
     }
 
     /**
