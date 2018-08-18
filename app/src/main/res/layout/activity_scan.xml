@@ -20,32 +20,26 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/scanner_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
-            android:id="@+id/scanner_info"
-            android:layout_width="match_parent"
+            android:id="@+id/splash_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/primaryDark"
-            android:gravity="center_horizontal"
-            android:padding="10dp"
+            android:background="@color/black_75"
+            android:padding="@dimen/spacing_normal"
             android:text="@string/qrcode_point_to_scan"
-            android:textColor="@color/primaryForeground"
-            android:textSize="14sp"
-            android:textStyle="normal" />
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/scanner_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </android.support.constraint.ConstraintLayout>
-
-    </LinearLayout>
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_mid"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/flash_toggle"

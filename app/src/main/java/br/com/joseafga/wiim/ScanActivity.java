@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
@@ -52,8 +53,15 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         // scanner init
         mScannerView = new ZXingScannerView(this);
         ConstraintLayout lo = findViewById(R.id.scanner_view);
-        lo.addView(mScannerView);
+        lo.addView(mScannerView, 0);
         mScannerView.setAutoFocus(true);
+
+        // fade animation on text after scanner start
+        AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
+        findViewById(R.id.splash_text).startAnimation(fadeOut);
+        fadeOut.setStartOffset(3000); // hold time to start animation
+        fadeOut.setDuration(2000); // milliseconds
+        fadeOut.setFillAfter(true);
 
         // floating action button on click event (flash on/off)
         flashToggle = findViewById(R.id.flash_toggle);
