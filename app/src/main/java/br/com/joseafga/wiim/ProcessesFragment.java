@@ -10,17 +10,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.URLUtil;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
 import br.com.joseafga.wiim.models.Process;
-import br.com.joseafga.wiim.models.Tag;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -85,27 +82,36 @@ public class ProcessesFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<ArrayList<Process>> call, Throwable t) {
-                    onErrorAlert(t.getMessage());
+                    onConnectionError(t.getMessage());
                 }
             });
         } catch (Exception e) {
-            onErrorAlert(e.getMessage());
+            onConnectionError(e.getMessage());
         }
     }
 
     /**
-     * Show errors alert dialog with message
+     * Show connection errors alert dialog with message
+     * It have two buttons to exit application or reconfigure
      *
      * @param msg message text
      */
-    private void onErrorAlert(String msg) {
+    private void onConnectionError(String msg) {
         new AlertDialog.Builder(getContext())
                 .setTitle(R.string.error)
                 .setMessage(msg)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().finish();
+                        System.exit(0);
+                    }
+                })
+                .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getActivity().getApplicationContext(), SettingsActivity.class);
+                        startActivity(intent);
                     }
                 })
                 .create()

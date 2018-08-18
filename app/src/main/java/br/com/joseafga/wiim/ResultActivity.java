@@ -138,7 +138,7 @@ public class ResultActivity extends AppCompatActivity {
                     getData();
                 } catch (Exception e) {
                     // alert dialog if error occurs
-                    onErrorAlert(e.getMessage());
+                    onConnectionError(e.getMessage());
                 }
             }
         }, updateInterval);
@@ -164,7 +164,7 @@ public class ResultActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Process> call, Throwable t) {
-                    onErrorAlert(t.getMessage());
+                    onConnectionError(t.getMessage());
                 }
             });
 
@@ -185,28 +185,38 @@ public class ResultActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Tag> call, Throwable t) {
-                    onErrorAlert(t.getMessage());
+                    onConnectionError(t.getMessage());
                 }
             });
         }
     }
 
     /**
-     * Show errors alert dialog with message
+     * Show connection errors alert dialog with message
+     * It have two buttons to exit application or reconfigure
      *
      * @param msg message text
      */
-    private void onErrorAlert(String msg) {
-        new AlertDialog.Builder(ResultActivity.this)
+    private void onConnectionError(String msg) {
+        new AlertDialog.Builder(this)
                 .setTitle(R.string.error)
                 .setMessage(msg)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
+                        System.exit(0);
+                    }
+                })
+                .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(ResultActivity.this, SettingsActivity.class);
+                        startActivity(intent);
                     }
                 })
                 .create()
                 .show();
     }
+
 }

@@ -5,7 +5,9 @@
     <string name="result">Resultado</string>
     <string name="results">Resultados</string>
     <string name="error">Erro</string>
+    <string name="settings">Configurações</string>
     <string name="server">Servidor</string>
+    <string name="exit">Sair</string>
     <string name="qrcode_point_to_scan">Aponte o celular para o QRCode</string>
     <string name="qrcode_error">Erro de leitura ou QRCode inválido.\n\nLog: </string>
     <string name="permission_denied">Permissão negada, não é possivel acessar a câmera</string>
@@ -18,7 +20,7 @@
     <string name="pref_header_general">Geral</string>
 
     <string name="pref_title_server_address">Endereço do servidor</string>
-    <string name="pref_default_server_address">http://192.168.0.1</string>
+    <string name="pref_default_server_address">http://192.168.0.1/</string>
     <string name="pref_invalid_url">URL inválida</string>
 
     <string name="pref_title_update_interval">Intervalo de atualização</string>

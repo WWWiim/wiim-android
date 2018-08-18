@@ -6,6 +6,11 @@
 
 package br.com.joseafga.wiim;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
+
 import java.util.ArrayList;
 
 import br.com.joseafga.wiim.models.Process;
@@ -48,4 +53,5 @@ public class WiimApi {
         // Create an instance of our Wiim API interface.
         return retrofit.create(WiimService.class);
     }
+
 }
