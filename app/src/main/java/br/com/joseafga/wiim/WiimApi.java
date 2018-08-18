@@ -19,6 +19,10 @@ public class WiimApi {
     private static final String API_KEY = "xyz";
 
     public interface WiimService {
+        // http://www.joseafga.com.br/wiim/api/v1/processes/
+        @GET("processes/")
+        Call<Process> getProcesses();
+
         // http://www.joseafga.com.br/wiim/api/v1/processes/:id
         @GET("processes/{id}")
         Call<Process> getProcess(@Path("id") String id);
