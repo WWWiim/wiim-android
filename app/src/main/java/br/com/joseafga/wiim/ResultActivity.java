@@ -34,7 +34,7 @@ import retrofit2.Response;
 public class ResultActivity extends AppCompatActivity {
 
     public RecyclerView mRecyclerView;
-    protected ResultAdapter mResultAdapter;
+    protected TagAdapter mTagAdapter;
     protected CollapsingToolbarLayout mCollapsingToolbar;
     protected ProgressBar mProgressBar;
     // preferences
@@ -119,14 +119,14 @@ public class ResultActivity extends AppCompatActivity {
         mProgressBar.setVisibility(View.GONE);
 
         // Fetch TAGs
-        if (mResultAdapter == null) {
+        if (mTagAdapter == null) {
             // set layout manager
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            mResultAdapter = new ResultAdapter(tagsList);
-            mRecyclerView.setAdapter(mResultAdapter);
+            mTagAdapter = new TagAdapter(tagsList);
+            mRecyclerView.setAdapter(mTagAdapter);
         } else {
-            mResultAdapter.updateList(tagsList);
+            mTagAdapter.updateList(tagsList);
         }
 
         handler.postDelayed(new Runnable() {

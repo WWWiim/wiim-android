@@ -29,7 +29,7 @@ import br.com.joseafga.wiim.models.Tag;
 /**
  * This class is ...
  */
-public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder> {
+public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
     // store list with tags
     private ArrayList<Tag> mList;
@@ -42,7 +42,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
      * @param context Activity context
      * @param list    Tag list
      */
-    public ResultAdapter(ArrayList<Tag> list) {
+    public TagAdapter(ArrayList<Tag> list) {
         mList = list;
     }
 
