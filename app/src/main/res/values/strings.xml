@@ -46,4 +46,8 @@
     <string name="pref_title_contact">Contato</string>
     <string name="pref_desc_contact">Entre em contato conosco</string>
     <string name="pref_mail_contact">mailto:jose.afga@gmail.com</string>
+
+    <!-- Processes fragment -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="required_permissions">É necessário conceder as permissões de acesso</string>
 </resources>

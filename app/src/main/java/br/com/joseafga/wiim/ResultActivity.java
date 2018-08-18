@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import br.com.joseafga.wiim.models.Process;
 import br.com.joseafga.wiim.models.Tag;
@@ -50,19 +51,26 @@ public class ResultActivity extends AppCompatActivity {
 
         // set layout view
         setContentView(R.layout.activity_result);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // set views
+        // set widgets
         mProgressBar = findViewById(R.id.loading_spinner);
         mCollapsingToolbar = findViewById(R.id.collapsing_toolbar);
         mRecyclerView = findViewById(R.id.recycler_view);
+        // set recycle view (and layout manager)
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(llm);
+        mTagAdapter = new TagAdapter(new ArrayList<Tag>()); // begin with empty array to avoid error
+        mRecyclerView.setAdapter(mTagAdapter);
+
         // get intent extras from main activity
         qrData = getIntent().getExtras().getStringArray("QRData");
 
@@ -97,11 +105,12 @@ public class ResultActivity extends AppCompatActivity {
 
     /**
      * Set Collapsing toolbar texts
-     * @param title
-     * @param comment
-     * @param zone
+     *
+     * @param title toolbar text title
+     * @param comment toolbar text summary
+     * @param zone toolbar bottom text
      */
-    public void setToolbarTexts(String title, String comment, String zone){
+    public void setToolbarTexts(String title, String comment, String zone) {
         // set process title
         mCollapsingToolbar.setTitle(title);
 
@@ -119,16 +128,8 @@ public class ResultActivity extends AppCompatActivity {
         // All done, remove progress bar
         mProgressBar.setVisibility(View.GONE);
 
-        // Fetch TAGs
-        if (mTagAdapter == null) {
-            // set layout manager
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-            mTagAdapter = new TagAdapter(tagsList);
-            mRecyclerView.setAdapter(mTagAdapter);
-        } else {
-            mTagAdapter.updateList(tagsList);
-        }
+        // Update TAGs
+        mTagAdapter.updateList(tagsList);
 
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -193,9 +194,9 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * Show errors alert dialog with message
      *
-     * @param t
+     * @param msg message text
      */
-    private void onErrorAlert(String msg){
+    private void onErrorAlert(String msg) {
         new AlertDialog.Builder(ResultActivity.this)
                 .setTitle(R.string.error)
                 .setMessage(msg)

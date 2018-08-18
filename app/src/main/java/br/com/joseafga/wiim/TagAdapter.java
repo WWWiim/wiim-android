@@ -42,7 +42,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
      *
      * @param list Tag list
      */
-    private TagAdapter(ArrayList<Tag> list) {
+    public TagAdapter(ArrayList<Tag> list) {
         mList = list;
     }
 
