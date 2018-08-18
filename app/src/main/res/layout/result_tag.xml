@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp">
@@ -8,6 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_small"
         android:minHeight="70dp"
         android:orientation="horizontal">
 
@@ -23,7 +26,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/spacing_small"
             android:layout_weight="55"
             android:orientation="vertical">
 
@@ -32,23 +34,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tag Title"
-                android:textSize="@dimen/text_mid"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tag_summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus iaculis, felis vitae fermentum pulvinar, magna metus."
+                android:text="..."
                 android:textSize="@dimen/text_normal" />
 
         </LinearLayout>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="45"
-            android:layout_gravity="center">
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="45">
 
             <android.support.constraint.Guideline
                 android:id="@+id/guide_right"
@@ -64,9 +66,10 @@
                 android:id="@+id/tag_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_small"
                 android:text="000.0"
-                android:textSize="@dimen/text_big"
+                android:textSize="@dimen/text_very_big"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tag_unit"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,31 +77,30 @@
                 android:id="@+id/tag_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_normal"
                 android:text="Unit"
                 android:textSize="@dimen/text_normal"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guide_right"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/tag_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_marginBottom="2dp"
                 android:layout_marginEnd="@dimen/spacing_small"
-                android:layout_marginTop="7dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tag_date"
-                app:layout_constraintTop_toBottomOf="@+id/tag_value"
-                app:srcCompat="@drawable/circle_quality" />
+                app:srcCompat="@drawable/circle" />
 
             <TextView
                 android:id="@+id/tag_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
                 android:text="00:00:00.999"
                 android:textSize="@dimen/text_small"
-                app:layout_constraintEnd_toStartOf="@+id/guide_right"
-                app:layout_constraintTop_toBottomOf="@+id/tag_value" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guide_right" />
 
         </android.support.constraint.ConstraintLayout>
 

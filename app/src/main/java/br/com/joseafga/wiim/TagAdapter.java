@@ -39,7 +39,6 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
      * Class Constructor
      * Provide a suitable constructor
      *
-     * @param context Activity context
      * @param list    Tag list
      */
     public TagAdapter(ArrayList<Tag> list) {
@@ -103,6 +102,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         // justify(tagSummary);
         tagValue.setText(String.valueOf(rec.getValue()));
         tagUnit.setText(tag.getUnit());
+        // TODO green if quality is good
+        // tagQuality.setColorFilter(0xffff0000)
         tagDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
     }
 

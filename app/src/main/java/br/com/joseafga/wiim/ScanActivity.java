@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
@@ -38,7 +38,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
 
     private static final int REQUEST_CAMERA = 1;
     private static final Pattern QRPATTERN = Pattern.compile("^(process|tag):([0-9]+)$");
-    protected FloatingActionButton flashToggle;
+    protected ImageButton flashToggle;
     protected ZXingScannerView mScannerView;
 
     @Override
@@ -71,11 +71,11 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                 if (mScannerView.getFlash()) {
                     // turn off
                     mScannerView.setFlash(false);
-                    flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
+                    flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
                 } else {
                     // turn on
                     mScannerView.setFlash(true);
-                    flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
+                    flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
                 }
             }
         });
