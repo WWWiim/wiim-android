@@ -38,7 +38,7 @@
     <string name="pref_header_about">Sobre</string>
 
     <string name="pref_title_version">Versão Wiim</string>
-    <string name="pref_desc_version">0.4.2-alpha</string>
+    <string name="pref_desc_version">0.4.3-alpha</string>
     <string name="pref_title_contributors">Colaboradores</string>
     <string name="pref_desc_contributors"><![CDATA[Andreza Castillho \nJosé Almeida \nMatheus Figueiró \nRodrigo Amaro]]></string>
     <string name="pref_title_visit_repo">Visite o repositório do projeto</string>
