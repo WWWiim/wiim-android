@@ -73,16 +73,11 @@ public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Process process = mList.get(position);
-        TextView ItemTitle, ItemSummary, ItemZone;
-
-        ItemTitle = holder.ItemTitle;
-        ItemSummary = holder.ItemSummary;
-        ItemZone = holder.ItemZone;
 
         // set texts
-        ItemTitle.setText(process.getName());
-        ItemSummary.setText(process.getComment());
-        ItemZone.setText(process.getZone());
+        holder.ItemTitle.setText(process.getName());
+        holder.ItemSummary.setText(process.getComment());
+        holder.ItemZone.setText(process.getZone());
         // set events
         holder.ItemCard.setOnClickListener(new View.OnClickListener() {
             @Override

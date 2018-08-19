@@ -80,32 +80,24 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Tag tag = mList.get(position);
         Record rec = tag.getRecords().get(0);
-        ImageView itemImage;
-        TextView itemTitle, itemSummary, itemValue, itemUnit, itemDate;
 
         int imageRes;
-        itemImage = holder.itemImage;
-        itemTitle = holder.itemTitle;
-        itemSummary = holder.itemSummary;
-        itemValue = holder.itemValue;
-        itemUnit = holder.itemUnit;
-        itemDate = holder.itemDate;
 
         // set face according to the status
         if (tag.getStatus() < 2.5) imageRes = R.drawable.ic_faces_unhappy_24dp;
         else if (tag.getStatus() > 4) imageRes = R.drawable.ic_faces_neutral_24dp;
         else imageRes = R.drawable.ic_faces_happy_24dp;
 
-        itemImage.setImageResource(imageRes);
-        itemTitle.setText(tag.getAlias());
-        itemSummary.setText(tag.getComment());
+        holder.itemImage.setImageResource(imageRes);
+        holder.itemTitle.setText(tag.getAlias());
+        holder.itemSummary.setText(tag.getComment());
         // ugly update when justify on
         // justify(itemSummary);
-        itemValue.setText(String.valueOf(rec.getValue()));
-        itemUnit.setText(tag.getUnit());
+        holder.itemValue.setText(String.valueOf(rec.getValue()));
+        holder.itemUnit.setText(tag.getUnit());
         // TODO: green if quality is good
         // itemQuality.setColorFilter(0xffff0000)
-        itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
+        holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
     }
 
     /**
