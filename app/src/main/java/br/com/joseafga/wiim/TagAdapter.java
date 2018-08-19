@@ -6,6 +6,7 @@
 
 package br.com.joseafga.wiim;
 
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -21,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,6 +35,7 @@ import br.com.joseafga.wiim.models.Tag;
  */
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
+    private Context mContext;
     // store list of tags
     private ArrayList<Tag> mList;
     //private Map<Integer, ViewHolder> mCards = new HashMap<Integer, ViewHolder>();
@@ -42,7 +46,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
      *
      * @param list Tag list
      */
-    public TagAdapter(ArrayList<Tag> list) {
+    public TagAdapter(Context context, ArrayList<Tag> list) {
+        mContext = context;
         mList = list;
     }
 
@@ -51,7 +56,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView itemImage;
+        ImageView itemImage, itemStatus;
         TextView itemTitle, itemSummary, itemValue, itemUnit, itemDate;
 
         public ViewHolder(View itemView) {
@@ -62,6 +67,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             itemSummary = itemView.findViewById(R.id.item_summary);
             itemValue = itemView.findViewById(R.id.item_value);
             itemUnit = itemView.findViewById(R.id.item_unit);
+            itemStatus = itemView.findViewById(R.id.item_status);
             itemDate = itemView.findViewById(R.id.item_date);
         }
     }
@@ -80,23 +86,31 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Tag tag = mList.get(position);
         Record rec = tag.getRecords().get(0);
-
-        int imageRes;
+        int imageStatus;
 
         // set face according to the status
-        if (tag.getStatus() < 2.5) imageRes = R.drawable.ic_faces_unhappy_24dp;
-        else if (tag.getStatus() > 4) imageRes = R.drawable.ic_faces_neutral_24dp;
-        else imageRes = R.drawable.ic_faces_happy_24dp;
+        if (tag.getStatus() < 2.5) imageStatus = R.drawable.ic_faces_unhappy_24dp;
+        else if (tag.getStatus() > 4) imageStatus = R.drawable.ic_faces_neutral_24dp;
+        else imageStatus = R.drawable.ic_faces_happy_24dp;
 
-        holder.itemImage.setImageResource(imageRes);
+        // set image
+        if (tag.getIcon().equals("")) {
+            // if have no image show default
+            holder.itemImage.setImageResource(R.drawable.placeholder_tag);
+        } else {
+            // if have image url ... load it
+            Picasso.get().load(tag.getIcon())
+                    .placeholder(R.drawable.placeholder_tag)
+                    .into(holder.itemImage); // set image from url
+        }
+
         holder.itemTitle.setText(tag.getAlias());
         holder.itemSummary.setText(tag.getComment());
-        // ugly update when justify on
-        // justify(itemSummary);
+        // justify(itemSummary); // ugly update when justify on
         holder.itemValue.setText(String.valueOf(rec.getValue()));
         holder.itemUnit.setText(tag.getUnit());
-        // TODO: green if quality is good
-        // itemQuality.setColorFilter(0xffff0000)
+        // TODO: quality is good|?bad
+        holder.itemStatus.setImageResource(imageStatus);
         holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
     }
 
@@ -115,7 +129,6 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     public int getItemCount() {
         return mList.size();
     }
-
 
     // used for justify summary text
     // from: <https://github.com/twiceyuan/TextJustification>

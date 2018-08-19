@@ -11,8 +11,7 @@
         android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
@@ -23,6 +22,7 @@
             android:scrollbars="vertical">
 
         </android.support.v7.widget.RecyclerView>
+
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -36,10 +36,10 @@
             android:id="@+id/slide_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_normal"
+            android:layout_margin="10dp"
             android:drawableLeft="@drawable/ic_arrow_downward_white_12dp"
             android:drawablePadding="@dimen/spacing_small"
-            android:text="Deslize para escanear QRCode"
+            android:text="@string/slide_to_scan"
             android:textColor="@color/primaryForeground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

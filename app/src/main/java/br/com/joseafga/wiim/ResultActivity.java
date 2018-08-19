@@ -68,7 +68,7 @@ public class ResultActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
-        mTagAdapter = new TagAdapter(new ArrayList<Tag>()); // begin with empty array to avoid error
+        mTagAdapter = new TagAdapter(this, new ArrayList<Tag>()); // begin with empty array to avoid error
         mRecyclerView.setAdapter(mTagAdapter);
 
         // get intent extras from main activity

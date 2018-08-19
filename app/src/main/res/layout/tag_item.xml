@@ -14,13 +14,24 @@
         android:paddingBottom="@dimen/spacing_small"
         android:paddingTop="@dimen/spacing_small">
 
-        <ImageView
-            android:id="@+id/item_image"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/spacing_normal"
-            android:src="@drawable/ic_faces_neutral_24dp" />
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/primary"
+                android:indeterminateTintMode="src_atop" />
+
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/spacing_normal" />
+        </android.support.design.widget.CoordinatorLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -85,9 +96,8 @@
 
             <ImageView
                 android:id="@+id/item_status"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_marginBottom="2dp"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_marginEnd="@dimen/spacing_small"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/item_date"
