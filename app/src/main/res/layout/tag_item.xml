@@ -14,24 +14,12 @@
         android:paddingBottom="@dimen/spacing_small"
         android:paddingTop="@dimen/spacing_small">
 
-        <android.support.design.widget.CoordinatorLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ProgressBar
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:indeterminateTint="@color/primary"
-                android:indeterminateTintMode="src_atop" />
-
-            <ImageView
-                android:id="@+id/item_image"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/spacing_normal" />
-        </android.support.design.widget.CoordinatorLayout>
+        <ImageView
+            android:id="@+id/item_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/spacing_normal" />
 
         <LinearLayout
             android:layout_width="0dp"
