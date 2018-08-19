@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    app:cardCornerRadius="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,8 +16,8 @@
 
         <ImageView
             android:id="@+id/item_image"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/spacing_normal"
             android:src="@drawable/ic_faces_neutral_24dp" />
@@ -33,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Item Title"
-                android:textSize="20dp"
+                android:textSize="@dimen/text_mid"
                 android:textStyle="bold" />
 
             <TextView
@@ -67,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_small"
                 android:text="000.0"
-                android:textSize="@dimen/text_very_big"
+                android:textSize="@dimen/text_28"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/item_unit"
                 app:layout_constraintTop_toTopOf="parent" />

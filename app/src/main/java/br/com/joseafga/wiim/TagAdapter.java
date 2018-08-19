@@ -32,7 +32,7 @@ import br.com.joseafga.wiim.models.Tag;
  */
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
-    // store list with tags
+    // store list of tags
     private ArrayList<Tag> mList;
     //private Map<Integer, ViewHolder> mCards = new HashMap<Integer, ViewHolder>();
 

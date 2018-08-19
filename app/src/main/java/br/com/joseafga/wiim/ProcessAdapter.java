@@ -7,7 +7,10 @@
 package br.com.joseafga.wiim;
 
 import android.content.ClipData;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +26,8 @@ import br.com.joseafga.wiim.models.Process;
  */
 public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHolder> {
 
-    // store list with tags
+    private Context mContext ;
+    // store list of processes
     private ArrayList<Process> mList;
     //private Map<Integer, ViewHolder> mCards = new HashMap<Integer, ViewHolder>();
 
@@ -33,7 +37,8 @@ public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHold
      *
      * @param list Process list
      */
-    public ProcessAdapter(ArrayList<Process> list) {
+    public ProcessAdapter(Context context, ArrayList<Process> list) {
+        mContext = context;
         mList = list;
     }
 
@@ -42,13 +47,16 @@ public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHold
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView ItemTitle, ItemSummary;
+        CardView ItemCard;
+        TextView ItemTitle, ItemSummary, ItemZone;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            ItemCard = itemView.findViewById(R.id.item_card);
             ItemTitle = itemView.findViewById(R.id.item_title);
             ItemSummary = itemView.findViewById(R.id.item_summary);
+            ItemZone = itemView.findViewById(R.id.item_zone);
         }
     }
 
@@ -64,14 +72,30 @@ public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHold
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Process process = mList.get(position);
-        TextView ItemTitle, ItemSummary;
+        final Process process = mList.get(position);
+        TextView ItemTitle, ItemSummary, ItemZone;
 
         ItemTitle = holder.ItemTitle;
         ItemSummary = holder.ItemSummary;
+        ItemZone = holder.ItemZone;
 
+        // set texts
         ItemTitle.setText(process.getName());
         ItemSummary.setText(process.getComment());
+        ItemZone.setText(process.getZone());
+        // set events
+        holder.ItemCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // start new activity passing process data
+                Intent intent = new Intent(mContext, ResultActivity.class);
+                intent.putExtra("QRData", new String[]{
+                        "process", String.valueOf(process.getId())
+                });
+
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     /**

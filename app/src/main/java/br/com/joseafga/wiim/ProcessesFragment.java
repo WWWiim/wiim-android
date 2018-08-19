@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -41,7 +42,6 @@ public class ProcessesFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,10 +52,10 @@ public class ProcessesFragment extends Fragment {
         mProgressBar = view.findViewById(R.id.loading_spinner);// set widgets
         mRecyclerView = view.findViewById(R.id.recycler_view);
         // set recycle view (and layout manager)
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(llm);
-        mProcessAdapter = new ProcessAdapter(new ArrayList<Process>()); // begin with empty array to avoid error
+        GridLayoutManager glm = new GridLayoutManager(getContext(), 2);
+        // glm.setOrientation(GridLayoutManager.DEFAULT_SPAN_COUNT);
+        mRecyclerView.setLayoutManager(glm);
+        mProcessAdapter = new ProcessAdapter(getContext(), new ArrayList<Process>()); // begin with empty array to avoid error
         mRecyclerView.setAdapter(mProcessAdapter);
 
         // get processes to view

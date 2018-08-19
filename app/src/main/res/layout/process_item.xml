@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_card"
+    android:layout_width="160dp"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="4dp">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="4dp"
         android:layout_gravity="center"
         android:orientation="vertical">
 
@@ -15,22 +22,42 @@
             android:id="@+id/item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:text="Item Title"
-            android:textSize="20dp"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_mid"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="4dp" />
 
         <TextView
             android:id="@+id/item_summary"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="..."
+            android:textAlignment="textStart"
             android:textSize="@dimen/text_normal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_title" />
+
+        <TextView
+            android:id="@+id/item_zone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:text="..."
+            android:textAlignment="textEnd"
+            android:textSize="@dimen/text_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_summary" />
 
     </android.support.constraint.ConstraintLayout>
 
