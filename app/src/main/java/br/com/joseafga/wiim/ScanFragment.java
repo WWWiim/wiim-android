@@ -75,7 +75,6 @@ public class ScanFragment extends Fragment {
             mBeep.playBeepSoundAndVibrate();
 
             if (matcher.matches()) {
-                lastText = null; // clear previous text
                 // go to result activity
                 Intent intent = new Intent(getActivity(), ResultActivity.class);
                 intent.putExtra("QRData", new String[]{matcher.group(1), matcher.group(2)});
@@ -194,6 +193,9 @@ public class ScanFragment extends Fragment {
     public void onPause() {
         super.onPause();
         mScannerView.pauseAndWait();
+
+        // clear previous text
+        lastText = null;
     }
 
     /**
