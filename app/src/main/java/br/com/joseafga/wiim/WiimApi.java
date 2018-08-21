@@ -42,8 +42,8 @@ public class WiimApi {
     }
 
     public static Service getService(String url) {
-        // limit number of connections
-        ConnectionPool pool = new ConnectionPool(5, 10000, TimeUnit.MILLISECONDS);
+        // limit number of connections and keep-alive duration
+        ConnectionPool pool = new ConnectionPool(5, 60, TimeUnit.SECONDS);
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectionPool(pool)
                 .build();
