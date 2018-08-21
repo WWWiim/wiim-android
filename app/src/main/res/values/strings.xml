@@ -26,8 +26,8 @@
     <string name="pref_title_update_interval">Intervalo de atualização</string>
     <string name="pref_desc_update_interval">Tempo em milissegundos com que as variáveis serão atualizadas.</string>
 
-    <string name="pref_desc_fail_tolerance">Quantidade de falhas toleradas para cada 100 requisições</string>
-    <string name="pref_title_fail_tolerance">Tolerância a falhas</string>
+    <string name="pref_desc_fault_tolerance">Quantidade de falhas toleradas para cada 100 requisições</string>
+    <string name="pref_title_fault_tolerance">Tolerância a falhas</string>
 
     <!-- Notifications settings -->
     <string name="pref_header_notifications">Notificações</string>

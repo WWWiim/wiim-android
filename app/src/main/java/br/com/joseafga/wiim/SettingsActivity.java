@@ -47,6 +47,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     public static final String KEY_PREF_SERVER_ADDRESS = "server_address";
     public static final String KEY_PREF_UPDATE_INTERVAL = "update_interval";
+    public static final String KEY_PREF_FAULT_TOLERANCE = "fault_tolerance";
 
     /**
      * A preference value change listener that updates the preference's summary

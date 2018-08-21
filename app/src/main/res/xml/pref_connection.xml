@@ -26,9 +26,9 @@
 
     <br.com.joseafga.wiim.helpers.NumberPickerPreference
         android:defaultValue="10"
-        android:key="fail_tolerance"
-        android:summary="@string/pref_desc_fail_tolerance"
-        android:title="@string/pref_title_fail_tolerance"
+        android:key="fault_tolerance"
+        android:summary="@string/pref_desc_fault_tolerance"
+        android:title="@string/pref_title_fault_tolerance"
         custom:maxValue="100"
         custom:minValue="0"
         custom:stepValue="1" />
