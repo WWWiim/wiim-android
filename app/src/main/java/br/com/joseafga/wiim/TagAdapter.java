@@ -39,6 +39,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     // store list of tags
     private ArrayList<Tag> mList;
     //private Map<Integer, ViewHolder> mCards = new HashMap<Integer, ViewHolder>();
+    private Picasso mPicasso = Picasso.get();
 
     /**
      * Class Constructor
@@ -99,7 +100,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             holder.itemImage.setImageResource(R.drawable.placeholder_tag);
         } else {
             // if have image url ... load it
-            Picasso.get().load(tag.getIcon())
+            mPicasso.load(tag.getIcon())
                     .placeholder(R.drawable.placeholder_tag)
                     .into(holder.itemImage); // set image from url
         }

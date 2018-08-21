@@ -6,15 +6,13 @@
 
 package br.com.joseafga.wiim;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import br.com.joseafga.wiim.models.Process;
 import br.com.joseafga.wiim.models.Tag;
+import okhttp3.ConnectionPool;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,7 +24,7 @@ public class WiimApi {
     // for future implementation
     private static final String API_KEY = "xyz";
 
-    public interface WiimService {
+    public interface Service {
         // http://www.joseafga.com.br/wiim/api/v1/processes/
         @Headers("Accept: application/json")
         @GET("processes/")
@@ -43,15 +41,22 @@ public class WiimApi {
         Call<Tag> getTags(@Path("id") String id);
     }
 
-    public static WiimService getService(String url) {
+    public static Service getService(String url) {
+        // limit number of connections
+        ConnectionPool pool = new ConnectionPool(5, 10000, TimeUnit.MILLISECONDS);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectionPool(pool)
+                .build();
+
         // Create a very simple REST adapter which points the Wiim API.
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         // Create an instance of our Wiim API interface.
-        return retrofit.create(WiimService.class);
+        return retrofit.create(Service.class);
     }
 
 }
