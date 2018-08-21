@@ -15,6 +15,7 @@
     <!-- Activities -->
     <string name="title_activity_result">Resultado</string>
     <string name="title_activity_settings">Configurações</string>
+    <string name="loading">Carregando...</string>
 
     <!-- Connection settings -->
     <string name="pref_header_connection">Conexão</string>

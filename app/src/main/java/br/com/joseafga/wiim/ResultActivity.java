@@ -76,6 +76,9 @@ public class ResultActivity extends AppCompatActivity {
         mTagAdapter = new TagAdapter(this, new ArrayList<Tag>()); // begin with empty array to avoid error
         mRecyclerView.setAdapter(mTagAdapter);
 
+        // set a default title
+        mCollapsingToolbar.setTitle(getString(R.string.loading));
+
         // set preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
