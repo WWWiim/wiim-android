@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2018 José Almeida <jose.afga@gmail.com>
+ *
+ * https://creativecommons.org/licenses/by-nc/4.0/
+ */
+
 package br.com.joseafga.wiim;
 
 
@@ -52,7 +58,7 @@ public class ScanFragment extends Fragment implements ZXingScannerView.ResultHan
 
         // scanner init
         mScannerView = new ZXingScannerView(getActivity());
-        mScannerView.setAutoFocus(true);
+        mScannerView.setAutoFocus(false);
         // layout widget
         ConstraintLayout lo = view.findViewById(R.id.scanner_view);
         lo.addView(mScannerView, 0);
