@@ -3,9 +3,9 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="br.com.joseafga.wiim.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="br.com.joseafga.wiim.SettingsActivity$ConnectionPreferenceFragment"
         android:icon="@drawable/ic_build_black_24dp"
-        android:title="@string/pref_header_general" />
+        android:title="@string/pref_header_connection" />
 
     <header
         android:fragment="br.com.joseafga.wiim.SettingsActivity$NotificationPreferenceFragment"

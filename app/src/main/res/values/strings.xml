@@ -16,8 +16,8 @@
     <string name="title_activity_result">Resultado</string>
     <string name="title_activity_settings">Configurações</string>
 
-    <!-- General settings -->
-    <string name="pref_header_general">Geral</string>
+    <!-- Connection settings -->
+    <string name="pref_header_connection">Conexão</string>
 
     <string name="pref_title_server_address">Endereço do servidor</string>
     <string name="pref_default_server_address">http://192.168.0.1/</string>
@@ -25,6 +25,9 @@
 
     <string name="pref_title_update_interval">Intervalo de atualização</string>
     <string name="pref_desc_update_interval">Tempo em milissegundos com que as variáveis serão atualizadas.</string>
+
+    <string name="pref_desc_fail_tolerance">Quantidade de falhas toleradas para cada 100 requisições</string>
+    <string name="pref_title_fail_tolerance">Tolerância a falhas</string>
 
     <!-- Notifications settings -->
     <string name="pref_header_notifications">Notificações</string>
