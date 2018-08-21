@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -26,12 +25,18 @@ import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.zxing.Result;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.ResultPoint;
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
+import com.journeyapps.barcodescanner.DefaultDecoderFactory;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -39,17 +44,63 @@ import static android.Manifest.permission.CAMERA;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScanFragment extends Fragment implements ZXingScannerView.ResultHandler {
+public class ScanFragment extends Fragment {
 
     private static final int REQUEST_CAMERA = 1;
     private static final Pattern QR_PATTERN = Pattern.compile("^(process|tag):([0-9]+)$");
+    protected DecoratedBarcodeView mScannerView;
+    protected String lastText; // prevent duplicates
+    // flash light variables
+    protected static boolean flashStatus = false;
     protected ImageButton flashToggle;
-    protected ZXingScannerView mScannerView;
+
+    // handle scanner result callback
+    private BarcodeCallback handleScanner = new BarcodeCallback() {
+        @Override
+        public void barcodeResult(BarcodeResult result) {
+            // Prevent duplicate scans
+            if (result.getText() == null || result.getText().equals(lastText))
+                return;
+            lastText = result.getText();
+
+            // logging
+            Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
+            // sound
+            // TODO <uses-permission android:name="android.permission.VIBRATE" />
+            //new BeepManager(getActivity()).playBeepSoundAndVibrate();
+
+            // regex matches
+            Matcher matcher = QR_PATTERN.matcher(result.getText());
+
+            if (matcher.matches()) {
+                // go to result activity
+                Intent intent = new Intent(getActivity(), ResultActivity.class);
+                intent.putExtra("QRData", new String[]{matcher.group(1), matcher.group(2)});
+                startActivity(intent);
+            } else {
+                // dialog with error
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.error)
+                        .setMessage(getString(R.string.qrcode_error) + result.getText())
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mScannerView.resume();
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+        }
+
+        @Override
+        public void possibleResultPoints(List<ResultPoint> resultPoints) {
+        }
+    };
 
     public ScanFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,11 +108,12 @@ public class ScanFragment extends Fragment implements ZXingScannerView.ResultHan
         View view = inflater.inflate(R.layout.fragment_scan, container, false);
 
         // scanner init
-        mScannerView = new ZXingScannerView(getActivity());
-        mScannerView.setAutoFocus(false);
-        // layout widget
-        ConstraintLayout lo = view.findViewById(R.id.scanner_view);
-        lo.addView(mScannerView, 0);
+        mScannerView = view.findViewById(R.id.scanner_view);
+        mScannerView.setStatusText(""); // remove bottom text
+        Collection<BarcodeFormat> formats = Arrays.asList(BarcodeFormat.QR_CODE); // read QRCode only
+        mScannerView.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(formats));
+        // start scanner
+        mScannerView.decodeContinuous(handleScanner);
 
         // fade animation on text after scanner start
         AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
@@ -72,20 +124,28 @@ public class ScanFragment extends Fragment implements ZXingScannerView.ResultHan
 
         // floating action button on click event (flash on/off)
         flashToggle = view.findViewById(R.id.flash_toggle);
-        flashToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mScannerView.getFlash()) {
-                    // turn off
-                    mScannerView.setFlash(false);
-                    flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
-                } else {
-                    // turn on
-                    mScannerView.setFlash(true);
-                    flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
+
+        if (hasFlash()) {
+            flashToggle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (flashStatus) {
+                        // turn off
+                        mScannerView.setTorchOff();
+                        flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
+                    } else {
+                        // turn on
+                        mScannerView.setTorchOn();
+                        flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
+                    }
+
+                    // toggle flash status
+                    flashStatus = !flashStatus;
                 }
-            }
-        });
+            });
+        } else {
+            flashToggle.setVisibility(View.GONE);
+        }
 
         // check SDK version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -97,12 +157,17 @@ public class ScanFragment extends Fragment implements ZXingScannerView.ResultHan
         return view;
     }
 
-    private boolean checkPermission() {
-        return (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), CAMERA) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{CAMERA}, REQUEST_CAMERA);
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        // pause scanner if not visible
+        if (mScannerView != null) {
+            if (isVisibleToUser) {
+                mScannerView.resume();
+            } else {
+                mScannerView.pauseAndWait();
+            }
+        }
     }
 
     @Override
@@ -111,8 +176,8 @@ public class ScanFragment extends Fragment implements ZXingScannerView.ResultHan
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
-                mScannerView.setResultHandler(this);
-                mScannerView.startCamera();
+                //mScannerView.setResultHandler(this);
+                mScannerView.resume();
             } else {
                 requestPermission();
             }
@@ -120,9 +185,27 @@ public class ScanFragment extends Fragment implements ZXingScannerView.ResultHan
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mScannerView.stopCamera();
+    public void onPause() {
+        super.onPause();
+        mScannerView.pauseAndWait();
+    }
+
+    /**
+     * Check if the device's camera has a Flashlight.
+     *
+     * @return true if there is Flashlight, otherwise false.
+     */
+    private boolean hasFlash() {
+        return getActivity().getApplicationContext().getPackageManager()
+                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+    }
+
+    private boolean checkPermission() {
+        return (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), CAMERA) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{CAMERA}, REQUEST_CAMERA);
     }
 
     // TODO: really need this?
@@ -163,34 +246,6 @@ public class ScanFragment extends Fragment implements ZXingScannerView.ResultHan
                     }
                 }
                 break;
-        }
-    }
-
-    @Override
-    public void handleResult(Result result) {
-        // logging
-        Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
-        // regex matches
-        Matcher matcher = QR_PATTERN.matcher(result.getText());
-
-        if (matcher.matches()) {
-            // go to result activity
-            Intent intent = new Intent(getActivity(), ResultActivity.class);
-            intent.putExtra("QRData", new String[]{matcher.group(1), matcher.group(2)});
-            startActivity(intent);
-        } else {
-            // dialog with error
-            new AlertDialog.Builder(getContext())
-                    .setTitle(R.string.error)
-                    .setMessage(getString(R.string.qrcode_error) + result.getText())
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mScannerView.resumeCameraPreview(ScanFragment.this);
-                        }
-                    })
-                    .create()
-                    .show();
         }
     }
 }
