@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.ResultPoint;
+import com.google.zxing.client.android.BeepManager;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
@@ -53,6 +54,8 @@ public class ScanFragment extends Fragment {
     // flash light variables
     protected static boolean flashStatus = false;
     protected ImageButton flashToggle;
+    // beep and vibrate
+    protected BeepManager mBeep;
 
     // handle scanner result callback
     private BarcodeCallback handleScanner = new BarcodeCallback() {
@@ -65,14 +68,14 @@ public class ScanFragment extends Fragment {
 
             // logging
             Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
-            // sound
-            // TODO <uses-permission android:name="android.permission.VIBRATE" />
-            //new BeepManager(getActivity()).playBeepSoundAndVibrate();
+            // beep sound and vibrate
+            mBeep.playBeepSoundAndVibrate();
 
             // regex matches
             Matcher matcher = QR_PATTERN.matcher(result.getText());
 
             if (matcher.matches()) {
+                lastText = null; // clear previous text
                 // go to result activity
                 Intent intent = new Intent(getActivity(), ResultActivity.class);
                 intent.putExtra("QRData", new String[]{matcher.group(1), matcher.group(2)});
@@ -114,6 +117,9 @@ public class ScanFragment extends Fragment {
         mScannerView.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(formats));
         // start scanner
         mScannerView.decodeContinuous(handleScanner);
+
+        mBeep = new BeepManager(getActivity());
+        mBeep.setVibrateEnabled(true);
 
         // fade animation on text after scanner start
         AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);

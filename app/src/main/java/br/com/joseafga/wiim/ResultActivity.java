@@ -127,7 +127,7 @@ public class ResultActivity extends AppCompatActivity {
         updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 10) * 100; // multiply x100 to get real milliseconds
         faultTolerance = prefs.getInt(SettingsActivity.KEY_PREF_FAULT_TOLERANCE, 10);
 
-        // update api
+        // update api url
         mService = WiimApi.getService(apiUrl);
     }
 
