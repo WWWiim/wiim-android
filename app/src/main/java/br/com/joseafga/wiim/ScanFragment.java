@@ -68,11 +68,11 @@ public class ScanFragment extends Fragment {
 
             // logging
             Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
-            // beep sound and vibrate
-            mBeep.playBeepSoundAndVibrate();
 
             // regex matches
             Matcher matcher = QR_PATTERN.matcher(result.getText());
+            // beep sound and vibrate
+            mBeep.playBeepSoundAndVibrate();
 
             if (matcher.matches()) {
                 lastText = null; // clear previous text
