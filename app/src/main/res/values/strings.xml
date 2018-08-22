@@ -30,6 +30,13 @@
     <string name="pref_desc_fault_tolerance">Quantidade de falhas toleradas para cada 100 requisições</string>
     <string name="pref_title_fault_tolerance">Tolerância a falhas</string>
 
+
+    <!-- QR Code settings -->
+    <string name="pref_header_qrcode">QR Code</string>
+
+    <string name="pref_title_beep">Reproduzir Som</string>
+    <string name="pref_title_summary">Emite um beep ao realizar leitura do QRCode</string>
+
     <!-- Notifications settings -->
     <string name="pref_header_notifications">Notificações</string>
 

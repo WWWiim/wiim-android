@@ -9,9 +9,11 @@ package br.com.joseafga.wiim;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -53,9 +55,10 @@ public class ScanFragment extends Fragment {
     protected String lastText; // prevent duplicates
     // flash light variables
     protected static boolean flashStatus = false;
-    protected ImageButton flashToggle;
+    protected ImageButton mFlashToggle;
     // beep and vibrate
     protected BeepManager mBeep;
+    protected boolean beepEnabled;
 
     // handle scanner result callback
     private BarcodeCallback handleScanner = new BarcodeCallback() {
@@ -72,7 +75,8 @@ public class ScanFragment extends Fragment {
             // regex matches
             Matcher matcher = QR_PATTERN.matcher(result.getText());
             // beep sound and vibrate
-            mBeep.playBeepSoundAndVibrate();
+            if (beepEnabled)
+                mBeep.playBeepSoundAndVibrate();
 
             if (matcher.matches()) {
                 // go to result activity
@@ -116,9 +120,9 @@ public class ScanFragment extends Fragment {
         mScannerView.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(formats));
         // start scanner
         mScannerView.decodeContinuous(handleScanner);
-
+        // beep sound
         mBeep = new BeepManager(getActivity());
-        mBeep.setVibrateEnabled(true);
+        getPreferences();
 
         // fade animation on text after scanner start
         AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
@@ -128,20 +132,20 @@ public class ScanFragment extends Fragment {
         view.findViewById(R.id.splash_text).startAnimation(fadeOut);
 
         // floating action button on click event (flash on/off)
-        flashToggle = view.findViewById(R.id.flash_toggle);
+        mFlashToggle = view.findViewById(R.id.flash_toggle);
 
         if (hasFlash()) {
-            flashToggle.setOnClickListener(new View.OnClickListener() {
+            mFlashToggle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (flashStatus) {
                         // turn off
                         mScannerView.setTorchOff();
-                        flashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
+                        mFlashToggle.setImageResource(R.drawable.ic_flash_off_white_24dp);
                     } else {
                         // turn on
                         mScannerView.setTorchOn();
-                        flashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
+                        mFlashToggle.setImageResource(R.drawable.ic_flash_on_white_24dp);
                     }
 
                     // toggle flash status
@@ -149,7 +153,7 @@ public class ScanFragment extends Fragment {
                 }
             });
         } else {
-            flashToggle.setVisibility(View.GONE);
+            mFlashToggle.setVisibility(View.GONE);
         }
 
         // check SDK version
@@ -181,8 +185,8 @@ public class ScanFragment extends Fragment {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
-                //mScannerView.setResultHandler(this);
                 mScannerView.resume();
+                getPreferences(); // update preferences
             } else {
                 requestPermission();
             }
@@ -206,6 +210,17 @@ public class ScanFragment extends Fragment {
     private boolean hasFlash() {
         return getActivity().getApplicationContext().getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+    }
+
+    /**
+     * Get and/or update preferentes
+     */
+    private void getPreferences(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        beepEnabled = prefs.getBoolean(SettingsActivity.KEY_PREF_QRCODE_BEEP, true);
+
+        if (prefs.getBoolean(SettingsActivity.KEY_PREF_QRCODE_VIBRATE, true))
+            mBeep.setVibrateEnabled(true); // set vibrate based on settings
     }
 
     private boolean checkPermission() {

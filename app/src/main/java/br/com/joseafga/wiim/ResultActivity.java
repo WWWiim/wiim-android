@@ -78,15 +78,10 @@ public class ResultActivity extends AppCompatActivity {
 
         // set a default title
         mCollapsingToolbar.setTitle(getString(R.string.loading));
-
-        // set preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
-        updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 10) * 100; // multiply x100 to get real milliseconds
-        faultTolerance = prefs.getInt(SettingsActivity.KEY_PREF_FAULT_TOLERANCE, 10);
-
         // set API connection
         mService = WiimApi.getService(apiUrl);
+
+        getPreferences();
 
         // get intent extras from main activity
         qrData = getIntent().getExtras().getStringArray("QRData");
@@ -121,17 +116,23 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         // update preferences
+        getPreferences();
+        // update api url
+        mService = WiimApi.getService(apiUrl);
+    }
+
+    /**
+     * Get and/or update preferentes
+     */
+    public void getPreferences(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
         updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 10) * 100; // multiply x100 to get real milliseconds
         faultTolerance = prefs.getInt(SettingsActivity.KEY_PREF_FAULT_TOLERANCE, 10);
-
-        // update api url
-        mService = WiimApi.getService(apiUrl);
     }
 
     /**

@@ -48,6 +48,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public static final String KEY_PREF_SERVER_ADDRESS = "server_address";
     public static final String KEY_PREF_UPDATE_INTERVAL = "update_interval";
     public static final String KEY_PREF_FAULT_TOLERANCE = "fault_tolerance";
+    public static final String KEY_PREF_QRCODE_BEEP = "qrcode_beep";
+    public static final String KEY_PREF_QRCODE_VIBRATE = "qrcode_vibrate";
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -185,6 +187,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || ConnectionPreferenceFragment.class.getName().equals(fragmentName)
+                || QRCodePreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName)
                 || AboutPreferenceFragment.class.getName().equals(fragmentName);
     }
@@ -236,6 +239,32 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
+
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * This fragment shows QR Code preferences only. It is used when the
+     * activity is showing a two-pane settings UI.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class QRCodePreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_qrcode);
+            setHasOptionsMenu(true);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            }
+
             return super.onOptionsItemSelected(item);
         }
     }
@@ -266,6 +295,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
+
             return super.onOptionsItemSelected(item);
         }
     }
@@ -290,6 +320,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
+
             return super.onOptionsItemSelected(item);
         }
     }
