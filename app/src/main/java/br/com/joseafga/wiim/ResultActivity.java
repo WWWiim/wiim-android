@@ -65,6 +65,9 @@ public class ResultActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        // get saved preferences
+        getPreferences();
+
         // set widgets
         mProgressBar = findViewById(R.id.loading_spinner);
         mCollapsingToolbar = findViewById(R.id.collapsing_toolbar);
@@ -80,8 +83,6 @@ public class ResultActivity extends AppCompatActivity {
         mCollapsingToolbar.setTitle(getString(R.string.loading));
         // set API connection
         mService = WiimApi.getService(apiUrl);
-
-        getPreferences();
 
         // get intent extras from main activity
         qrData = getIntent().getExtras().getStringArray("QRData");
