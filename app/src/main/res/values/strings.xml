@@ -11,8 +11,8 @@
     <string name="icon">Ícone</string>
     <string name="status">Status</string>
     <string name="qrcode_point_to_scan">Aponte o celular para o QRCode</string>
-    <string name="qrcode_error">Erro de leitura ou QRCode inválido.\n\nLog: </string>
-    <string name="permission_denied">Permissão negada, não é possivel acessar a câmera</string>
+    <string name="qrcode_error">Erro de leitura ou QR Code inválido.\n\nLog:&#160;</string>
+    <string name="permission_denied">Permissão negada, não é possivel acessar a câmera.</string>
 
     <!-- Activities -->
     <string name="title_activity_result">Resultado</string>
