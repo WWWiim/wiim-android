@@ -10,15 +10,12 @@ package br.com.joseafga.wiim;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,8 +55,9 @@ public class ProcessesFragment extends Fragment {
         mProgressBar = view.findViewById(R.id.loading_spinner);// set widgets
         mRecyclerView = view.findViewById(R.id.recycler_view);
         // set recycle view (and layout manager)
-        GridLayoutManager glm = new GridLayoutManager(getContext(), 2);
-        // glm.setOrientation(GridLayoutManager.DEFAULT_SPAN_COUNT);
+        int columns = getResources().getInteger(R.integer.processes_columns);
+        GridLayoutManager glm = new GridLayoutManager(getContext(), columns);
+        // glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
         mProcessAdapter = new ProcessAdapter(getContext(), new ArrayList<Process>()); // begin with empty array to avoid error
         mRecyclerView.setAdapter(mProcessAdapter);

@@ -20,9 +20,9 @@
         android:id="@+id/loading_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTintMode="src_atop"
+        android:layout_gravity="center"
         android:indeterminateTint="@color/primary"
-        android:layout_gravity="center" />
+        android:indeterminateTintMode="src_atop" />
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
