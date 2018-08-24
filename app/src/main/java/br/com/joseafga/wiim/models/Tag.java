@@ -3,6 +3,7 @@
  *
  * https://creativecommons.org/licenses/by-nc/4.0/
  */
+
 package br.com.joseafga.wiim.models;
 
 import com.google.gson.annotations.Expose;
