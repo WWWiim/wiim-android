@@ -153,10 +153,11 @@ public class ScanFragment extends Fragment {
                 }
             });
         } else {
+            // hide flash button
             mFlashToggle.setVisibility(View.GONE);
         }
 
-        // check SDK version
+        // check SDK version and permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!checkPermission()) {
                 requestPermission();
@@ -171,11 +172,10 @@ public class ScanFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         // pause scanner if not visible
         if (mScannerView != null) {
-            if (isVisibleToUser) {
+            if (isVisibleToUser)
                 mScannerView.resume();
-            } else {
+            else
                 mScannerView.pauseAndWait();
-            }
         }
     }
 
@@ -185,7 +185,8 @@ public class ScanFragment extends Fragment {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
-                mScannerView.resume();
+                if (getUserVisibleHint())
+                    mScannerView.resume(); // if is visible start scanner
                 getPreferences(); // update preferences
             } else {
                 requestPermission();
