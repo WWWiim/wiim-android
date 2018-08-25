@@ -51,7 +51,7 @@
     <string name="pref_header_about">Sobre</string>
 
     <string name="pref_title_version">Versão Wiim</string>
-    <string name="pref_desc_version">0.4.13-beta</string>
+    <string name="pref_desc_version">0.4.15-beta</string>
     <string name="pref_title_contributors">Colaboradores</string>
     <string name="pref_desc_contributors"><![CDATA[Andreza Castillho \nJosé Almeida \nMatheus Figueiró \nRodrigo Amaro]]></string>
     <string name="pref_title_visit_repo">Visite o repositório do projeto</string>
@@ -65,8 +65,7 @@
     <string name="icons_authors">Smashicons de www.flaticon.com \nwww.icons8.com</string>
 
     <!-- Processes fragment -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="required_permissions">É necessário conceder as permissões de acesso</string>
-    <string name="slide_to_scan">Deslize para escanear QRCode</string>
-    <string name="slide_to_processes">Deslize para ver os Processos</string>
+    <string name="qrcode">QR Code</string>
+    <string name="processes">Processos</string>
 </resources>

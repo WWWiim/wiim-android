@@ -5,13 +5,14 @@
     android:id="@+id/fragment_scan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="@string/bottom_sheet_behavior"
     tools:context=".ScanFragment">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/scanner_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -33,7 +34,7 @@
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_mid"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,32 +48,7 @@
         android:background="@drawable/circle"
         android:foreground="?attr/selectableItemBackground"
         android:src="@drawable/ic_flash_off_white_24dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/slide_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawableStart="@drawable/ic_arrow_upward_white_12dp"
-            android:drawablePadding="@dimen/spacing_small"
-            android:text="@string/slide_to_processes"
-            android:textAlignment="center"
-            android:textColor="@color/primaryForeground"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

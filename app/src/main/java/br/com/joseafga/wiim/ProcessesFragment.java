@@ -15,7 +15,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +59,8 @@ public class ProcessesFragment extends Fragment {
         // set recycle view (and layout manager)
         int columns = getResources().getInteger(R.integer.processes_columns);
         GridLayoutManager glm = new GridLayoutManager(getContext(), columns);
-        // glm.setOrientation(GridLayoutManager.VERTICAL);
+        glm.setOrientation(GridLayoutManager.VERTICAL);
+        // StaggeredGridLayoutManager glm = new StaggeredGridLayoutManager(columns, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
         mProcessAdapter = new ProcessAdapter(getContext(), new ArrayList<Process>()); // begin with empty array to avoid error
         mRecyclerView.setAdapter(mProcessAdapter);

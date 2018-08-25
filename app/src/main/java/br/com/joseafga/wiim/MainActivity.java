@@ -8,17 +8,17 @@ package br.com.joseafga.wiim;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
-
-import br.com.joseafga.wiim.helpers.VerticalViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,9 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
-     * The {@link VerticalViewPager} that will host the section contents.
+     * The {@link ViewPager} that will host the section contents.
      */
-    private VerticalViewPager mViewPager;
+    private ViewPager mViewPager;
+
+    /**
+     * The {@link TabLayout} show and browse tabs
+     */
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +51,21 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // show and browse tabs
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
         // Create the adapter that will return a fragment for each of the three
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Add fragments to view pager
-        mSectionsPagerAdapter.addItem(new ScanFragment());
-        mSectionsPagerAdapter.addItem(new ProcessesFragment());
+        mSectionsPagerAdapter.addItem(new ScanFragment(), getString(R.string.qrcode));
+        mSectionsPagerAdapter.addItem(new ProcessesFragment(), getString(R.string.processes));
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        // set tabs events
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mTabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
     }
 
     @Override
@@ -96,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
         }
 
-        public void addItem(Fragment fragment) {
+        public void addItem(Fragment fragment, String title) {
             fragments.add(fragment);
+            mTabLayout.addTab(mTabLayout.newTab().setText(title));
         }
 
         @Override
