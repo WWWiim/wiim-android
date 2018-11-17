@@ -211,9 +211,11 @@ public class ResultActivity extends AppCompatActivity {
                     try {
                         Process process = response.body();
 
+                        Log.d("PROCESS", process.getZone().getName());
+
                         // sets and updates
-                        setToolbarTexts(process.getName(), process.getComment(), process.getZone());
-                        updateDelayed(process.getTags());
+                        setToolbarTexts(process.getName(), process.getComment(), process.getZone().getName());
+                        //updateDelayed(process.getTags());
                     } catch (Exception e) {
                         // alert dialog if error occurs
                         onConnectionError(e.getMessage());

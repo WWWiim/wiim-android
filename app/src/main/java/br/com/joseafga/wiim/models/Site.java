@@ -12,25 +12,30 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * This class represents Process Model
+ * This class represents Site Model
  */
-public class Process {
+public class Site {
 
+    @SerializedName("comment")
+    @Expose
+    private String comment;
     @SerializedName("id")
     @Expose
     private Integer id;
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("comment")
+    @SerializedName("zones")
     @Expose
-    private String comment;
-    @SerializedName("tags")
-    @Expose
-    private List<Integer> tags = null;
-    @SerializedName("zone")
-    @Expose
-    private Zone zone;
+    private List<Integer> zones = null;
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public Integer getId() {
         return id;
@@ -48,28 +53,12 @@ public class Process {
         this.name = name;
     }
 
-    public String getComment() {
-        return comment;
+    public List<Integer> getZones() {
+        return zones;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public List<Integer> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Integer> tags) {
-        this.tags = tags;
-    }
-
-    public Zone getZone() {
-        return zone;
-    }
-
-    public void setZone(Zone zone) {
-        this.zone = zone;
+    public void setZones(List<Integer> zones) {
+        this.zones = zones;
     }
 
 }

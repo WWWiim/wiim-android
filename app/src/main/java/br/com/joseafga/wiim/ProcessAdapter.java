@@ -77,7 +77,7 @@ public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHold
         // set texts
         holder.ItemTitle.setText(process.getName());
         holder.ItemSummary.setText(process.getComment());
-        holder.ItemZone.setText(process.getZone());
+        holder.ItemZone.setText(process.getZone().getName());
         // set events
         holder.ItemCard.setOnClickListener(new View.OnClickListener() {
             @Override
