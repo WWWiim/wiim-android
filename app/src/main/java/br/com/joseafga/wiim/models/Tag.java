@@ -34,6 +34,9 @@ public class Tag {
     @SerializedName("icon")
     @Expose
     private String icon;
+    @SerializedName("server")
+    @Expose
+    private Integer server;
     @SerializedName("records")
     @Expose
     private ArrayList<Record> records = null;
@@ -84,6 +87,14 @@ public class Tag {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public Integer getServer() {
+        return server;
+    }
+
+    public void setServer(Integer server) {
+        this.server = server;
     }
 
     public ArrayList<Record> getRecords() {
