@@ -49,6 +49,8 @@ public class ResultActivity extends AppCompatActivity {
     private String[] qrData;
     // API connection instance
     private WiimApi.Service mService;
+    // prevent unnecessary update
+    private boolean running = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,9 @@ public class ResultActivity extends AppCompatActivity {
         // get intent extras from main activity
         qrData = getIntent().getExtras().getStringArray("QRData");
 
-        getData();
+        // set it is running
+        running = true;
+        loadData();
     }
 
     @Override
@@ -124,6 +128,15 @@ public class ResultActivity extends AppCompatActivity {
         getPreferences();
         // update api url
         mService = WiimApi.getService(apiUrl);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // stop running and all requests
+        running = false;
+        WiimApi.cancelRequests();
     }
 
     /**
@@ -166,9 +179,13 @@ public class ResultActivity extends AppCompatActivity {
 
         handler.postDelayed(new Runnable() {
             public void run() {
+                // execute only if is running
+                if (!running)
+                    return;
+
                 try {
-                    // get data to update process
-                    getData();
+                    // load data to update process
+                    loadDynamicData();
 
                     // check if requests reached 100
                     if (requestCount >= 100) {
@@ -200,8 +217,7 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * Get data from API of server address
      */
-    public void getData() {
-
+    public void loadData() {
         // API calls
         if (qrData[0].equals("process")) {
             mService.getProcess(qrData[1]).enqueue(new Callback<Process>() {
@@ -216,6 +232,7 @@ public class ResultActivity extends AppCompatActivity {
                         // sets and updates
                         setToolbarTexts(process.getName(), process.getComment(), process.getZone().getName());
                         //updateDelayed(process.getTags());
+                        loadDynamicData();
                     } catch (Exception e) {
                         // alert dialog if error occurs
                         onConnectionError(e.getMessage());
@@ -229,7 +246,7 @@ public class ResultActivity extends AppCompatActivity {
             });
 
         } else {
-            mService.getTags(qrData[1]).enqueue(new Callback<Tag>() {
+            mService.getTag(qrData[1]).enqueue(new Callback<Tag>() {
                 @Override
                 public void onResponse(Call<Tag> call, Response<Tag> response) {
                     try {
@@ -257,6 +274,33 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
+     * Get dynamic data update from API of server address
+     */
+    public void loadDynamicData() {
+        // API calls
+        if (qrData[0].equals("process")) {
+            mService.getProcessTags(qrData[1]).enqueue(new Callback<ArrayList<Tag>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Tag>> call, Response<ArrayList<Tag>> response) {
+                    try {
+                        updateDelayed(response.body());
+                    } catch (Exception e) {
+                        // alert dialog if error occurs
+                        onConnectionError(e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Tag>> call, Throwable t) {
+                    onConnectionError(t.getMessage());
+                }
+            });
+        } else {
+            // TODO single tag load
+        }
+    }
+
+    /**
      * Show connection errors alert dialog with message
      * It have two buttons to exit application or reconfigure
      *
@@ -268,6 +312,10 @@ public class ResultActivity extends AppCompatActivity {
             // reset counters
             faultCount = 0;
             requestCount = 0;
+
+            // stop running and all requests
+            running = false;
+            WiimApi.cancelRequests();
 
             // show message alert
             new AlertDialog.Builder(this)
