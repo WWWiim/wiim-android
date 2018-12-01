@@ -123,6 +123,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         mList.clear();
         mList.addAll(list);
         notifyDataSetChanged();
+        // TODO improve it
     }
 
     // Return the size of your dataset (invoked by the layout manager)
