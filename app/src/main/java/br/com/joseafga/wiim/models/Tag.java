@@ -34,9 +34,6 @@ public class Tag {
     @SerializedName("icon")
     @Expose
     private String icon;
-    @SerializedName("status")
-    @Expose
-    private Double status;
     @SerializedName("records")
     @Expose
     private ArrayList<Record> records = null;
@@ -87,14 +84,6 @@ public class Tag {
 
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    public Double getStatus() {
-        return status;
-    }
-
-    public void setStatus(Double status) {
-        this.status = status;
     }
 
     public ArrayList<Record> getRecords() {
