@@ -144,9 +144,13 @@ public class ResultActivity extends AppCompatActivity {
      */
     public void getPreferences(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
+        apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "localhost/");
         updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 10) * 100; // multiply x100 to get real milliseconds
         faultTolerance = prefs.getInt(SettingsActivity.KEY_PREF_FAULT_TOLERANCE, 10);
+
+        // add API suffix
+        if (!apiUrl.endsWith("/"))  apiUrl += "/";
+        apiUrl += "api/v1/";
     }
 
     /**

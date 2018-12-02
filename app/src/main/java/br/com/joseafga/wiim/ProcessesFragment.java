@@ -74,8 +74,11 @@ public class ProcessesFragment extends Fragment {
     public void getProcessesData() {
         // Update preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "");
+        apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "localhost/");
         updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 0) * 100; // multiply x100 to get real milliseconds
+        // add API suffix
+        if (!apiUrl.endsWith("/"))  apiUrl += "/";
+        apiUrl += "api/v1/";
 
         try {
             // API calls
