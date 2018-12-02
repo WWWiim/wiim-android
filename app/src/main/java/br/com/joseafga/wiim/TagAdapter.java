@@ -96,8 +96,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             imageStatus = R.drawable.ic_faces_happy_24dp;
 
         // set image
-        if (tag.getIcon().equals("")) {
-            // if have no image show default
+        // if have no image show default
+        if (tag.getIcon() == null || tag.getIcon().equals("")) {
             holder.itemImage.setImageResource(R.drawable.placeholder_tag);
         } else {
             // if have image url ... load it

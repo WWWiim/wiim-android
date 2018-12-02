@@ -227,11 +227,11 @@ public class ResultActivity extends AppCompatActivity {
                     try {
                         Process process = response.body();
 
-                        Log.d("PROCESS", process.getZone().getName());
+                        Log.d("PROCESS", process.getName());
 
                         // sets and updates
                         setToolbarTexts(process.getName(), process.getComment(), process.getZone().getName());
-                        //updateDelayed(process.getTags());
+                        // load data from dynamic fields
                         loadDynamicData();
                     } catch (Exception e) {
                         // alert dialog if error occurs
@@ -283,6 +283,8 @@ public class ResultActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ArrayList<Tag>> call, Response<ArrayList<Tag>> response) {
                     try {
+                        Log.d("TAGS", response.toString());
+
                         updateDelayed(response.body());
                     } catch (Exception e) {
                         // alert dialog if error occurs
