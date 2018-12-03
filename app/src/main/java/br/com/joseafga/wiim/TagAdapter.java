@@ -101,7 +101,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             holder.itemImage.setImageResource(R.drawable.placeholder_tag);
         } else {
             // if have image url ... load it
-            mPicasso.load(tag.getIcon())
+            mPicasso.load(tag.getIcon_url())
                     .placeholder(R.drawable.placeholder_tag)
                     .into(holder.itemImage); // set image from url
         }

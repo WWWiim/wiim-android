@@ -15,9 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +75,7 @@ public class ProcessesFragment extends Fragment {
         apiUrl = prefs.getString(SettingsActivity.KEY_PREF_SERVER_ADDRESS, "localhost/");
         updateInterval = prefs.getInt(SettingsActivity.KEY_PREF_UPDATE_INTERVAL, 0) * 100; // multiply x100 to get real milliseconds
         // add API suffix
-        if (!apiUrl.endsWith("/"))  apiUrl += "/";
+        if (!apiUrl.endsWith("/")) apiUrl += "/";
         apiUrl += "api/v1/";
 
         try {
@@ -85,11 +83,17 @@ public class ProcessesFragment extends Fragment {
             WiimApi.getService(apiUrl).getProcesses().enqueue(new Callback<ArrayList<Process>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Process>> call, Response<ArrayList<Process>> response) {
-                    // All done, remove progress bar
-                    mProgressBar.setVisibility(View.GONE);
+                    // prevent errors on response
+                    try {
+                        // All done, remove progress bar
+                        mProgressBar.setVisibility(View.GONE);
 
-                    // Update TAGs
-                    mProcessAdapter.updateList(response.body());
+                        // Update TAGs
+                        mProcessAdapter.updateList(response.body());
+                    } catch (Exception e) {
+                        // alert dialog if error occurs
+                        onConnectionError(e.getMessage());
+                    }
                 }
 
                 @Override
