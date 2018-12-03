@@ -34,6 +34,9 @@ public class Tag {
     @SerializedName("icon")
     @Expose
     private String icon;
+    @SerializedName("icon_url")
+    @Expose
+    private String icon_url;
     @SerializedName("server")
     @Expose
     private Integer server;
@@ -87,6 +90,14 @@ public class Tag {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getIcon_url() {
+        return icon_url;
+    }
+
+    public void setIcon_url(String icon_url) {
+        this.icon_url = icon_url;
     }
 
     public Integer getServer() {
