@@ -29,6 +29,9 @@ public class Record {
     @SerializedName("quality")
     @Expose
     private String quality;
+    @SerializedName("tag")
+    @Expose
+    private Integer tag;
 
     public Integer getId() {
         return id;
@@ -70,4 +73,11 @@ public class Record {
         this.quality = quality;
     }
 
+    public Integer getTag() {
+        return tag;
+    }
+
+    public void setTag(Integer tag) {
+        this.tag = tag;
+    }
 }

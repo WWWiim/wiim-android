@@ -28,6 +28,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import br.com.joseafga.wiim.models.Process;
+import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -207,18 +208,6 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * Update List if have array list as argument
-     *
-     * @param tagsList list of tags to update
-     */
-    public void updateDelayed(ArrayList<Tag> tagsList) {
-        // Update TAGs
-        mTagAdapter.updateList(tagsList);
-
-        updateDelayed();
-    }
-
-    /**
      * Get data from API of server address
      */
     public void loadData() {
@@ -233,8 +222,6 @@ public class ResultActivity extends AppCompatActivity {
 
                         // sets and updates
                         setToolbarTexts(process.getName(), process.getComment(), process.getZone().getName());
-                        // load data from dynamic fields
-                        loadDynamicData();
                     } catch (Exception e) {
                         // alert dialog if error occurs
                         onConnectionError(e.getMessage());
@@ -247,7 +234,10 @@ public class ResultActivity extends AppCompatActivity {
                 }
             });
 
+            // load tags list
+            loadListData();
         } else {
+            // TODO single tag
             mService.getTag(qrData[1]).enqueue(new Callback<Tag>() {
                 @Override
                 public void onResponse(Call<Tag> call, Response<Tag> response) {
@@ -259,8 +249,8 @@ public class ResultActivity extends AppCompatActivity {
                         // put tag in a array to adapter
                         ArrayList<Tag> tagsList = new ArrayList<Tag>();
                         tagsList.add(tag);
-                        updateDelayed(tagsList);
 
+                        //updateDelayed(tagsList);
                     } catch (Exception e) {
                         // alert dialog if error occurs
                         onConnectionError(e.getMessage());
@@ -276,16 +266,19 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * Get dynamic data update from API of server address
+     * Get list fields data
      */
-    public void loadDynamicData() {
+    public void loadListData() {
         // API calls
         if (qrData[0].equals("process")) {
             mService.getProcessTags(qrData[1]).enqueue(new Callback<ArrayList<Tag>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Tag>> call, Response<ArrayList<Tag>> response) {
                     try {
-                        updateDelayed(response.body());
+                        mTagAdapter.updateList(response.body());
+
+                        // load data for dynamic fields
+                        loadDynamicData();
                     } catch (Exception e) {
                         // alert dialog if error occurs
                         onConnectionError(e.getMessage());
@@ -300,6 +293,31 @@ public class ResultActivity extends AppCompatActivity {
         } else {
             // TODO single tag load
         }
+    }
+
+    /**
+     * Get dynamic data update from API of server address
+     */
+    public void loadDynamicData() {
+        mService.getProcessRecords(qrData[1]).enqueue(new Callback<ArrayList<Record>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Record>> call, Response<ArrayList<Record>> response) {
+                try {
+                    mTagAdapter.updateListValues(response.body());
+
+                    // delayed function to update
+                    updateDelayed();
+                } catch (Exception e) {
+                    // alert dialog if error occurs
+                    onConnectionError(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Record>> call, Throwable t) {
+                onConnectionError(t.getMessage());
+            }
+        });
     }
 
     /**

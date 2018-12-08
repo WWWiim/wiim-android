@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import br.com.joseafga.wiim.models.Process;
+import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
@@ -51,6 +52,16 @@ public class WiimApi {
         @Headers("Accept: application/json")
         @GET("tags/{id}")
         Call<Tag> getTag(@Path("id") String id);
+
+        // http://example.com/api/v1/tags/:id/records
+        @Headers("Accept: application/json")
+        @GET("tags/{id}/records")
+        Call<ArrayList<Record>> getTagRecords(@Path("id") String id);
+
+        // http://example.com/api/v1/processes/:id/records
+        @Headers("Accept: application/json")
+        @GET("processes/{id}/records")
+        Call<ArrayList<Record>> getProcessRecords(@Path("id") String id);
     }
 
     /**

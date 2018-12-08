@@ -16,6 +16,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +87,6 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Tag tag = mList.get(position);
-        //Record rec = tag.getRecords().get(0);
         int imageStatus;
 
         // set face according to the status
@@ -109,11 +109,16 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         holder.itemTitle.setText(tag.getAlias());
         holder.itemSummary.setText(tag.getComment());
         // justify(itemSummary); // ugly update when justify on
-        //holder.itemValue.setText(String.valueOf(rec.getValue()));
         holder.itemUnit.setText(tag.getUnit());
-        // TODO: quality is good|?bad
         holder.itemStatus.setImageResource(imageStatus);
-        //holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
+
+        if (tag.getRecords() != null && !tag.getRecords().isEmpty()) {
+            Record rec = tag.getRecords().get(0);
+
+            holder.itemValue.setText(String.valueOf(rec.getValue()));
+            holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
+            // TODO: quality is good|?bad
+        }
     }
 
     /**
@@ -123,8 +128,30 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     public void updateList(ArrayList<Tag> list) {
         mList.clear();
         mList.addAll(list);
+
         notifyDataSetChanged();
         // TODO improve it
+    }
+
+    /**
+     * Update Adapter list
+     * @param list List with Tags
+     */
+    public void updateListValues(ArrayList<Record> list) {
+        for (Record rec: list) {
+            for (Tag tag: mList) {
+                Log.d("Merda", rec.getTag().toString() + " : " + tag.getId().toString());
+                if (rec.getTag() == tag.getId()) {
+                    ArrayList<Record> recs = new ArrayList<Record>();
+                    recs.add(rec);
+
+                    tag.setRecords(recs);
+                }
+            }
+        }
+
+        // do update
+        notifyDataSetChanged();
     }
 
     // Return the size of your dataset (invoked by the layout manager)
