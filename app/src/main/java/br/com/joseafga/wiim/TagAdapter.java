@@ -92,6 +92,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         Tag tag = tl.getTag();
         Record rec = tl.getRecord();
 
+        // Tag data is required
         int imageStatus;
 
         // set face according to the status
@@ -117,10 +118,12 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         holder.itemUnit.setText(tag.getUnit());
         holder.itemStatus.setImageResource(imageStatus);
 
-        // Record data ...
-        holder.itemValue.setText(String.valueOf(rec.getValue()));
-        holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
-        // TODO: quality is good|?bad
+        // Record data is optional
+        if (rec != null) {
+            holder.itemValue.setText(String.valueOf(rec.getValue()));
+            holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
+            // TODO: quality is good|?bad
+        }
     }
 
     /**
@@ -151,7 +154,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
                 Record r = next.getRecord();
 
                 if (tag.getId() == t.getId()) {
-                    Log.d("UPDATING LIST", tag.getId().toString());
+                    Log.d("UPDATING", tag.getId().toString());
                     isUpdate = true; // have value to update
 
                     iterator.set(tl);

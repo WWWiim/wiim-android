@@ -60,7 +60,7 @@ public class WiimApi {
         // http://example.com/api/v1/tags/:id/records
         @Headers("Accept: application/json")
         @GET("tags/{id}/records")
-        Call<ArrayList<Record>> getTagRecords(@Path("id") String id);
+        Call<ArrayList<Record>> getTagRecords(@Path("id") String id, @QueryMap Map<String, String> params);
 
         // http://example.com/api/v1/processes/:id/timeline
         @Headers("Accept: application/json")

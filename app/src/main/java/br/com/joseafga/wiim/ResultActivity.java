@@ -51,10 +51,10 @@ public class ResultActivity extends AppCompatActivity {
     private Integer requestCount = 0;
     // QRCode result (process|tag, id)
     private String[] qrData;
-    // API connection instance
+    // API
     private WiimApi.Service mService;
-    // API parameters data
     private Map<String, String> params = new HashMap<>();
+    private ArrayList<Timeline> cachedList = new ArrayList<>();
     // prevent unnecessary update
     private boolean running = false;
 
@@ -93,7 +93,8 @@ public class ResultActivity extends AppCompatActivity {
         mService = WiimApi.getService(apiUrl);
 
         // get intent extras from main activity
-        qrData = getIntent().getExtras().getStringArray("QRData");
+        //qrData = getIntent().getExtras().getStringArray("QRData");
+        qrData = new String[]{"tag", "64"}; // force tag log for debug
 
         // set it is running
         running = true;
@@ -251,11 +252,16 @@ public class ResultActivity extends AppCompatActivity {
 
                         // set and updates
                         setToolbarTexts(tag.getAlias(), tag.getComment(), tag.getName());
-                        // put tag in a array to adapter
-                        ArrayList<Tag> tagsList = new ArrayList<Tag>();
-                        tagsList.add(tag);
 
-                        //updateDelayed(tagsList);
+                        // wrap timeline in a array to adapter can read it
+                        Timeline tl = new Timeline();
+                        tl.setTag(tag);
+                        cachedList.add(0, tl);
+
+                        // display tag item
+                        mTagAdapter.updateList(cachedList);
+
+                        loadDynamicData();
                     } catch (Exception e) {
                         // alert dialog if error occurs
                         onConnectionError(e.getMessage());
@@ -274,29 +280,72 @@ public class ResultActivity extends AppCompatActivity {
      * Get dynamic data update from API of server address
      */
     public void loadDynamicData() {
-        mService.getProcessTimeline(qrData[1], params).enqueue(new Callback<ArrayList<Timeline>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Timeline>> call, Response<ArrayList<Timeline>> response) {
-                try {
-                    // use response to update items
-                    int lastRecId = mTagAdapter.updateList(response.body());
-                    // if last record id greater than zero update params
-                    if (lastRecId > 0)
-                        params.put("since", String.valueOf(lastRecId));
+        if (qrData[0].equals("process")) {
+            mService.getProcessTimeline(qrData[1], params).enqueue(new Callback<ArrayList<Timeline>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Timeline>> call, Response<ArrayList<Timeline>> response) {
+                    try {
+                        // use response to update items
+                        int lastRecId = mTagAdapter.updateList(response.body());
+                        // if last record id greater than zero update params
+                        if (lastRecId > 0)
+                            params.put("since", String.valueOf(lastRecId));
 
-                    // delayed function to update
-                    updateDelayed();
-                } catch (Exception e) {
-                    // alert dialog if error occurs
-                    onConnectionError(e.getMessage());
+                        // delayed function to update
+                        updateDelayed();
+                    } catch (Exception e) {
+                        // alert dialog if error occurs
+                        onConnectionError(e.getMessage());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ArrayList<Timeline>> call, Throwable t) {
-                onConnectionError(t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<ArrayList<Timeline>> call, Throwable t) {
+                    onConnectionError(t.getMessage());
+                }
+            });
+        } else {
+            mService.getTagRecords(qrData[1], params).enqueue(new Callback<ArrayList<Record>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Record>> call, Response<ArrayList<Record>> response) {
+                    try {
+                        ArrayList<Record> recs = response.body();
+                        Record lastRec = null;
+
+                        assert recs != null;
+                        if (!recs.isEmpty()) {  // checks if have content
+                            for (Record rec : recs) {
+                                // TODO use opc time
+                                if (lastRec == null || rec.getId() > lastRec.getId())
+                                    lastRec = rec;  // get last record
+                            }
+
+                            // TODO update graph
+
+                            Timeline tl = cachedList.get(0);
+                            tl.setRecord(lastRec);
+
+                            // use response to update items
+                            int lastRecId = mTagAdapter.updateList(cachedList);
+                            // if last record id greater than zero update params
+                            if (lastRecId > 0)
+                                params.put("since", String.valueOf(lastRecId));
+                        }
+
+                        // delayed function to update
+                        updateDelayed();
+                    } catch (Exception e) {
+                        // alert dialog if error occurs
+                        onConnectionError(e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Record>> call, Throwable t) {
+                    onConnectionError(t.getMessage());
+                }
+            });
+        }
     }
 
     /**
