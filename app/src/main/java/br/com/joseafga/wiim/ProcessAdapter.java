@@ -47,16 +47,16 @@ public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHold
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        CardView ItemCard;
-        TextView ItemTitle, ItemSummary, ItemZone;
+        CardView itemCard;
+        TextView itemTitle, itemSummary, itemZone;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            ItemCard = itemView.findViewById(R.id.item_card);
-            ItemTitle = itemView.findViewById(R.id.item_title);
-            ItemSummary = itemView.findViewById(R.id.item_summary);
-            ItemZone = itemView.findViewById(R.id.item_zone);
+            itemCard = itemView.findViewById(R.id.item_card);
+            itemTitle = itemView.findViewById(R.id.item_title);
+            itemSummary = itemView.findViewById(R.id.item_summary);
+            itemZone = itemView.findViewById(R.id.item_zone);
         }
     }
 
@@ -75,11 +75,11 @@ public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHold
         final Process process = mList.get(position);
 
         // set texts
-        holder.ItemTitle.setText(process.getName());
-        holder.ItemSummary.setText(process.getComment());
-        holder.ItemZone.setText(process.getZone().getName());
+        holder.itemTitle.setText(process.getName());
+        holder.itemSummary.setText(process.getComment());
+        holder.itemZone.setText(process.getZone().getName());
         // set events
-        holder.ItemCard.setOnClickListener(new View.OnClickListener() {
+        holder.itemCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // start new activity passing process data
