@@ -83,10 +83,8 @@ public class ProcessAdapter extends RecyclerView.Adapter<ProcessAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 // start new activity passing process data
-                Intent intent = new Intent(mContext, ResultActivity.class);
-                intent.putExtra("QRData", new String[]{
-                        "process", String.valueOf(process.getId())
-                });
+                Intent intent = new Intent(mContext, ProcessActivity.class);
+                intent.putExtra("QRData", String.valueOf(process.getId()));
 
                 mContext.startActivity(intent);
             }

@@ -79,9 +79,13 @@ public class ScanFragment extends Fragment {
                 mBeep.playBeepSoundAndVibrate();
 
             if (matcher.matches()) {
-                // go to result activity
-                Intent intent = new Intent(getActivity(), ResultActivity.class);
-                intent.putExtra("QRData", new String[]{matcher.group(1), matcher.group(2)});
+                // select and go result activity
+                Class activity = (matcher.group(1).equals("process")) ?
+                        ProcessActivity.class : TagActivity.class;
+
+                Intent intent = new Intent(getActivity(), activity);
+                intent.putExtra("QRData", matcher.group(2));
+
                 startActivity(intent);
             } else {
                 // dialog with error

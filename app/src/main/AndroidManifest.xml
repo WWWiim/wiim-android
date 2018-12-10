@@ -23,7 +23,6 @@
             android:theme="@style/Wiim.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -36,13 +35,28 @@
                 android:value="br.com.joseafga.wiim.MainActivity" />
         </activity>
         <activity
-            android:name=".ResultActivity"
-            android:label="@string/title_activity_result"
+            android:name=".ProcessActivity"
+            android:label="@string/title_activity_process"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Wiim.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.joseafga.wiim.MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TagActivity"
+            android:label="@string/title_activity_tag"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Wiim.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.joseafga.wiim.MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -1,9 +1,3 @@
-/*
- * Copyright (C) 2018 José Almeida <jose.afga@gmail.com>
- *
- * https://creativecommons.org/licenses/by-nc/4.0/
- */
-
 package br.com.joseafga.wiim;
 
 import android.content.DialogInterface;
@@ -30,31 +24,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.joseafga.wiim.models.Process;
-import br.com.joseafga.wiim.models.Record;
-import br.com.joseafga.wiim.models.Tag;
 import br.com.joseafga.wiim.models.Timeline;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ResultActivity extends AppCompatActivity {
+public abstract class ResultActivity extends AppCompatActivity {
 
     public RecyclerView mRecyclerView;
     protected TagAdapter mTagAdapter;
     protected CollapsingToolbarLayout mCollapsingToolbar;
     protected ProgressBar mProgressBar;
     // preferences
-    private String apiUrl;
-    private Integer updateInterval;
-    private Integer faultTolerance = 0;
-    private Integer faultCount = 0;
-    private Integer requestCount = 0;
-    // QRCode result (process|tag, id)
-    private String[] qrData;
+    public String apiUrl;
+    public Integer updateInterval;
+    public Integer faultTolerance = 0;
+    public Integer faultCount = 0;
+    public Integer requestCount = 0;
+    // QRCode result (tag or process id)
+    protected String qrData;
     // API
-    private WiimApi.Service mService;
-    private Map<String, String> params = new HashMap<>();
-    private ArrayList<Timeline> cachedList = new ArrayList<>();
+    protected WiimApi.Service mService;
+    protected Map<String, String> params = new HashMap<>();
     // prevent unnecessary update
     private boolean running = false;
 
@@ -93,8 +84,7 @@ public class ResultActivity extends AppCompatActivity {
         mService = WiimApi.getService(apiUrl);
 
         // get intent extras from main activity
-        //qrData = getIntent().getExtras().getStringArray("QRData");
-        qrData = new String[]{"tag", "64"}; // force tag log for debug
+        qrData = getIntent().getExtras().getString("QRData");
 
         // set it is running
         running = true;
@@ -182,6 +172,12 @@ public class ResultActivity extends AppCompatActivity {
         processZone.setText(zone);
     }
 
+    public void addChart(){
+//        LineChartView chart = new LineChartView(this);
+//        findViewById(R.id.)
+//        layout.addView(chart);
+    }
+
     /**
      * Call get data after wait setting time
      */
@@ -219,137 +215,12 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * Get data from API of server address
      */
-    public void loadData() {
-        // API calls
-        if (qrData[0].equals("process")) {
-            mService.getProcess(qrData[1]).enqueue(new Callback<Process>() {
-                @Override
-                public void onResponse(Call<Process> call, Response<Process> response) {
-                    // prevent errors on response
-                    try {
-                        Process process = response.body();
-
-                        // sets and updates
-                        setToolbarTexts(process.getName(), process.getComment(), process.getZone().getName());
-                    } catch (Exception e) {
-                        // alert dialog if error occurs
-                        onConnectionError(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Process> call, Throwable t) {
-                    onConnectionError(t.getMessage());
-                }
-            });
-
-            // load timeline list async
-            loadDynamicData();
-        } else {
-            // TODO single tag
-            mService.getTag(qrData[1]).enqueue(new Callback<Tag>() {
-                @Override
-                public void onResponse(Call<Tag> call, Response<Tag> response) {
-                    try {
-                        Tag tag = response.body();
-
-                        // set and updates
-                        setToolbarTexts(tag.getAlias(), tag.getComment(), tag.getName());
-
-                        // wrap timeline in a array to adapter can read it
-                        Timeline tl = new Timeline();
-                        tl.setTag(tag);
-                        cachedList.add(0, tl);
-
-                        // display tag item
-                        mTagAdapter.updateList(cachedList);
-
-                        loadDynamicData();
-                    } catch (Exception e) {
-                        // alert dialog if error occurs
-                        onConnectionError(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Tag> call, Throwable t) {
-                    onConnectionError(t.getMessage());
-                }
-            });
-        }
-    }
+    public abstract void loadData();
 
     /**
      * Get dynamic data update from API of server address
      */
-    public void loadDynamicData() {
-        if (qrData[0].equals("process")) {
-            mService.getProcessTimeline(qrData[1], params).enqueue(new Callback<ArrayList<Timeline>>() {
-                @Override
-                public void onResponse(Call<ArrayList<Timeline>> call, Response<ArrayList<Timeline>> response) {
-                    try {
-                        // use response to update items
-                        int lastRecId = mTagAdapter.updateList(response.body());
-                        // if last record id greater than zero update params
-                        if (lastRecId > 0)
-                            params.put("since", String.valueOf(lastRecId));
-
-                        // delayed function to update
-                        updateDelayed();
-                    } catch (Exception e) {
-                        // alert dialog if error occurs
-                        onConnectionError(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<Timeline>> call, Throwable t) {
-                    onConnectionError(t.getMessage());
-                }
-            });
-        } else {
-            mService.getTagRecords(qrData[1], params).enqueue(new Callback<ArrayList<Record>>() {
-                @Override
-                public void onResponse(Call<ArrayList<Record>> call, Response<ArrayList<Record>> response) {
-                    try {
-                        ArrayList<Record> recs = response.body();
-                        Record lastRec = null;
-
-                        assert recs != null;
-                        if (!recs.isEmpty()) {  // checks if have content
-                            for (Record rec : recs) {
-                                // TODO use opc time
-                                if (lastRec == null || rec.getId() > lastRec.getId())
-                                    lastRec = rec;  // get last record
-                            }
-
-                            // TODO update graph
-
-                            Timeline tl = cachedList.get(0);
-                            tl.setRecord(lastRec);
-
-                            // use response to update items
-                            int lastRecId = mTagAdapter.updateList(cachedList);
-                            // if last record id greater than zero update params
-                            if (lastRecId > 0)
-                                params.put("since", String.valueOf(lastRecId));
-                        }
-
-                        // delayed function to update
-                        updateDelayed();
-                    } catch (Exception e) {
-                        // alert dialog if error occurs
-                        onConnectionError(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<Record>> call, Throwable t) {
-                    onConnectionError(t.getMessage());
-                }
-            });
-        }
-    }
+    public abstract void loadDynamicData();
 
     /**
      * Show connection errors alert dialog with message
@@ -357,7 +228,7 @@ public class ResultActivity extends AppCompatActivity {
      *
      * @param msg message text
      */
-    private void onConnectionError(String msg) {
+    public void onConnectionError(String msg) {
         // checks how many fails
         if (faultCount >= faultTolerance) {
             // reset counters
@@ -382,7 +253,7 @@ public class ResultActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(ResultActivity.this, SettingsActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
                             startActivity(intent);
                         }
                     })
@@ -395,5 +266,4 @@ public class ResultActivity extends AppCompatActivity {
             updateDelayed();
         }
     }
-
 }
