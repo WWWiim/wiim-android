@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import br.com.joseafga.wiim.models.Process;
 import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
+import br.com.joseafga.wiim.models.Timeline;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -58,10 +59,10 @@ public class WiimApi {
         @GET("tags/{id}/records")
         Call<ArrayList<Record>> getTagRecords(@Path("id") String id);
 
-        // http://example.com/api/v1/processes/:id/records
+        // http://example.com/api/v1/processes/:id/timeline
         @Headers("Accept: application/json")
-        @GET("processes/{id}/records")
-        Call<ArrayList<Record>> getProcessRecords(@Path("id") String id);
+        @GET("processes/{id}/timeline")
+        Call<ArrayList<Timeline>> getProcessTimeline(@Path("id") String id);
     }
 
     /**

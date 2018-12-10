@@ -26,10 +26,12 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
+import br.com.joseafga.wiim.models.Timeline;
 
 /**
  * This class adapt Tag objects from ArrayList to CardView layout
@@ -37,8 +39,8 @@ import br.com.joseafga.wiim.models.Tag;
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
     private Context mContext;
-    // store list of tags
-    private ArrayList<Tag> mList;
+    // store list of tags and records
+    private ArrayList<Timeline> mList;
     //private Map<Integer, ViewHolder> mCards = new HashMap<Integer, ViewHolder>();
     private Picasso mPicasso = Picasso.get();
 
@@ -48,7 +50,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
      *
      * @param list Tag list
      */
-    public TagAdapter(Context context, ArrayList<Tag> list) {
+    public TagAdapter(Context context, ArrayList<Timeline> list) {
         mContext = context;
         mList = list;
     }
@@ -86,14 +88,17 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Tag tag = mList.get(position);
+        Timeline tl = mList.get(position);
+        Tag tag = tl.getTag();
+        Record rec = tl.getRecord();
+
         int imageStatus;
 
         // set face according to the status
 //        if (tag.getStatus() < 2.5) imageStatus = R.drawable.ic_faces_unhappy_24dp;
 //        else if (tag.getStatus() > 4) imageStatus = R.drawable.ic_faces_neutral_24dp;
 //        else
-            imageStatus = R.drawable.ic_faces_happy_24dp;
+        imageStatus = R.drawable.ic_faces_happy_24dp;
 
         // set image
         // if have no image show default
@@ -112,46 +117,52 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         holder.itemUnit.setText(tag.getUnit());
         holder.itemStatus.setImageResource(imageStatus);
 
-        if (tag.getRecords() != null && !tag.getRecords().isEmpty()) {
-            Record rec = tag.getRecords().get(0);
-
-            holder.itemValue.setText(String.valueOf(rec.getValue()));
-            holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
-            // TODO: quality is good|?bad
-        }
+        // Record data ...
+        holder.itemValue.setText(String.valueOf(rec.getValue()));
+        holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
+        // TODO: quality is good|?bad
     }
 
     /**
      * Update Adapter list
-     * @param list List with Tags
+     *
+     * @param list List with Timeline (Tag, Record)
      */
-    public void updateList(ArrayList<Tag> list) {
-        mList.clear();
-        mList.addAll(list);
+    public void updateList(ArrayList<Timeline> list) {
+        boolean isUpdate = false; // updates an existing value
 
-        notifyDataSetChanged();
-        // TODO improve it
-    }
+        for (Timeline tl : list) {
+            // get timeline itens
+            Tag tag = tl.getTag();
+            Record rec = tl.getRecord();
 
-    /**
-     * Update Adapter list
-     * @param list List with Tags
-     */
-    public void updateListValues(ArrayList<Record> list) {
-        for (Record rec: list) {
-            for (Tag tag: mList) {
-                Log.d("Merda", rec.getTag().toString() + " : " + tag.getId().toString());
-                if (rec.getTag() == tag.getId()) {
-                    ArrayList<Record> recs = new ArrayList<Record>();
-                    recs.add(rec);
+            ListIterator<Timeline> iterator = mList.listIterator();
+            isUpdate = false; // reset value
 
-                    tag.setRecords(recs);
+            while (iterator.hasNext()) {
+                Timeline next = iterator.next();
+                Tag t = next.getTag();
+                Record r = next.getRecord();
+
+                if (tag.getId() == t.getId()) {
+                    Log.d("UPDATING LIST", tag.getId().toString());
+                    isUpdate = true; // have value to update
+
+                    iterator.set(tl);
                 }
             }
+
+            if (!isUpdate)
+                // create a new tag item
+                mList.add(tl);
         }
 
-        // do update
-        notifyDataSetChanged();
+//        mList.clear();
+//        mList.addAll(list);
+
+        // TODO improve it
+        if (list != null && !list.isEmpty())
+            notifyDataSetChanged();
     }
 
     // Return the size of your dataset (invoked by the layout manager)

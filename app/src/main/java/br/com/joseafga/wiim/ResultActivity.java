@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import br.com.joseafga.wiim.models.Process;
 import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
+import br.com.joseafga.wiim.models.Timeline;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -79,7 +80,7 @@ public class ResultActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
-        mTagAdapter = new TagAdapter(this, new ArrayList<Tag>()); // begin with empty array to avoid error
+        mTagAdapter = new TagAdapter(this, new ArrayList<Timeline>()); // begin with empty array to avoid error
         mRecyclerView.setAdapter(mTagAdapter);
 
         // set a default title
@@ -234,8 +235,8 @@ public class ResultActivity extends AppCompatActivity {
                 }
             });
 
-            // load tags list
-            loadListData();
+            // load timeline list async
+            loadDynamicData();
         } else {
             // TODO single tag
             mService.getTag(qrData[1]).enqueue(new Callback<Tag>() {
@@ -266,44 +267,14 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * Get list fields data
-     */
-    public void loadListData() {
-        // API calls
-        if (qrData[0].equals("process")) {
-            mService.getProcessTags(qrData[1]).enqueue(new Callback<ArrayList<Tag>>() {
-                @Override
-                public void onResponse(Call<ArrayList<Tag>> call, Response<ArrayList<Tag>> response) {
-                    try {
-                        mTagAdapter.updateList(response.body());
-
-                        // load data for dynamic fields
-                        loadDynamicData();
-                    } catch (Exception e) {
-                        // alert dialog if error occurs
-                        onConnectionError(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<Tag>> call, Throwable t) {
-                    onConnectionError(t.getMessage());
-                }
-            });
-        } else {
-            // TODO single tag load
-        }
-    }
-
-    /**
      * Get dynamic data update from API of server address
      */
     public void loadDynamicData() {
-        mService.getProcessRecords(qrData[1]).enqueue(new Callback<ArrayList<Record>>() {
+        mService.getProcessTimeline(qrData[1]).enqueue(new Callback<ArrayList<Timeline>>() {
             @Override
-            public void onResponse(Call<ArrayList<Record>> call, Response<ArrayList<Record>> response) {
+            public void onResponse(Call<ArrayList<Timeline>> call, Response<ArrayList<Timeline>> response) {
                 try {
-                    mTagAdapter.updateListValues(response.body());
+                    mTagAdapter.updateList(response.body());
 
                     // delayed function to update
                     updateDelayed();
@@ -314,7 +285,7 @@ public class ResultActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Record>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Timeline>> call, Throwable t) {
                 onConnectionError(t.getMessage());
             }
         });
