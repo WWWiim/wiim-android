@@ -26,6 +26,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.com.joseafga.wiim.models.Process;
 import br.com.joseafga.wiim.models.Record;
@@ -51,6 +53,8 @@ public class ResultActivity extends AppCompatActivity {
     private String[] qrData;
     // API connection instance
     private WiimApi.Service mService;
+    // API parameters data
+    private Map<String, String> params = new HashMap<>();
     // prevent unnecessary update
     private boolean running = false;
 
@@ -270,11 +274,15 @@ public class ResultActivity extends AppCompatActivity {
      * Get dynamic data update from API of server address
      */
     public void loadDynamicData() {
-        mService.getProcessTimeline(qrData[1]).enqueue(new Callback<ArrayList<Timeline>>() {
+        mService.getProcessTimeline(qrData[1], params).enqueue(new Callback<ArrayList<Timeline>>() {
             @Override
             public void onResponse(Call<ArrayList<Timeline>> call, Response<ArrayList<Timeline>> response) {
                 try {
-                    mTagAdapter.updateList(response.body());
+                    // use response to update items
+                    int lastRecId = mTagAdapter.updateList(response.body());
+                    // if last record id greater than zero update params
+                    if (lastRecId > 0)
+                        params.put("since", String.valueOf(lastRecId));
 
                     // delayed function to update
                     updateDelayed();

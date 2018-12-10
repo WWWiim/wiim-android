@@ -124,12 +124,15 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     }
 
     /**
+     *
      * Update Adapter list
      *
      * @param list List with Timeline (Tag, Record)
+     * @return greatest record id
      */
-    public void updateList(ArrayList<Timeline> list) {
+    public int updateList(ArrayList<Timeline> list) {
         boolean isUpdate = false; // updates an existing value
+        int lastRecId = 0;
 
         for (Timeline tl : list) {
             // get timeline itens
@@ -138,6 +141,9 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
             ListIterator<Timeline> iterator = mList.listIterator();
             isUpdate = false; // reset value
+
+            // get greatest id
+            lastRecId = (rec.getId() > lastRecId) ? rec.getId() : lastRecId;
 
             while (iterator.hasNext()) {
                 Timeline next = iterator.next();
@@ -163,6 +169,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         // TODO improve it
         if (list != null && !list.isEmpty())
             notifyDataSetChanged();
+
+        return lastRecId;
     }
 
     // Return the size of your dataset (invoked by the layout manager)

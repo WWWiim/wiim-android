@@ -7,6 +7,7 @@
 package br.com.joseafga.wiim;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import br.com.joseafga.wiim.models.Process;
@@ -21,13 +22,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
+import retrofit2.http.QueryMap;
 
 public class WiimApi {
     // for future implementation
     private static final String API_KEY = "xyz";
     // connection objects
     // limit number of connections and keep-alive duration
-    private static ConnectionPool pool = new ConnectionPool(5, 60, TimeUnit.SECONDS);;
+    private static ConnectionPool pool = new ConnectionPool(5, 60, TimeUnit.SECONDS);
+    ;
     private static OkHttpClient client = new OkHttpClient.Builder().connectionPool(pool).build();
 
     /**
@@ -62,7 +65,7 @@ public class WiimApi {
         // http://example.com/api/v1/processes/:id/timeline
         @Headers("Accept: application/json")
         @GET("processes/{id}/timeline")
-        Call<ArrayList<Timeline>> getProcessTimeline(@Path("id") String id);
+        Call<ArrayList<Timeline>> getProcessTimeline(@Path("id") String id, @QueryMap Map<String, String> params);
     }
 
     /**
