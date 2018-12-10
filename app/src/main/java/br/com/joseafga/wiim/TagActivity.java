@@ -19,7 +19,7 @@ public class TagActivity extends ResultActivity {
      */
     @Override
     protected void setLayout() {
-        setContentView(R.layout.activity_result);
+        setContentView(R.layout.activity_tag);
     }
 
     /**
