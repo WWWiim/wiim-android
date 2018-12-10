@@ -31,7 +31,8 @@ import retrofit2.Response;
 
 public abstract class ResultActivity extends AppCompatActivity {
 
-    public RecyclerView mRecyclerView;
+    // components
+    protected RecyclerView mRecyclerView;
     protected TagAdapter mTagAdapter;
     protected CollapsingToolbarLayout mCollapsingToolbar;
     protected ProgressBar mProgressBar;
@@ -54,7 +55,7 @@ public abstract class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // set layout view
-        setContentView(R.layout.activity_result);
+        setLayout();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -140,6 +141,11 @@ public abstract class ResultActivity extends AppCompatActivity {
     }
 
     /**
+     * Set activity layout
+     */
+    protected abstract void setLayout();
+
+    /**
      * Get and/or update preferentes
      */
     public void getPreferences(){
@@ -170,12 +176,6 @@ public abstract class ResultActivity extends AppCompatActivity {
         // set values
         processSummary.setText(comment);
         processZone.setText(zone);
-    }
-
-    public void addChart(){
-//        LineChartView chart = new LineChartView(this);
-//        findViewById(R.id.)
-//        layout.addView(chart);
     }
 
     /**

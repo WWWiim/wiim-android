@@ -11,6 +11,14 @@ import retrofit2.Response;
 public class ProcessActivity extends ResultActivity {
 
     /**
+     * Set activity layout
+     */
+    @Override
+    protected void setLayout() {
+        setContentView(R.layout.activity_result);
+    }
+
+    /**
      * Get data from API of server address
      */
     @Override

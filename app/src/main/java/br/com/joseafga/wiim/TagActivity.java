@@ -15,6 +15,14 @@ public class TagActivity extends ResultActivity {
     private ArrayList<Timeline> cachedList = new ArrayList<>();
 
     /**
+     * Set activity layout
+     */
+    @Override
+    protected void setLayout() {
+        setContentView(R.layout.activity_result);
+    }
+
+    /**
      * Get data from API of server address
      */
     @Override
