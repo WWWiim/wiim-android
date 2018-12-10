@@ -7,9 +7,11 @@
 package br.com.joseafga.wiim;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -60,12 +62,14 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        CardView itemCard;
         ImageView itemImage, itemStatus;
         TextView itemTitle, itemSummary, itemValue, itemUnit, itemDate;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            itemCard = itemView.findViewById(R.id.item_card);
             itemImage = itemView.findViewById(R.id.item_image);
             itemTitle = itemView.findViewById(R.id.item_title);
             itemSummary = itemView.findViewById(R.id.item_summary);
@@ -89,7 +93,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Timeline tl = mList.get(position);
-        Tag tag = tl.getTag();
+        final Tag tag = tl.getTag();
         Record rec = tl.getRecord();
 
         // Tag data is required
@@ -117,6 +121,18 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         // justify(itemSummary); // ugly update when justify on
         holder.itemUnit.setText(tag.getUnit());
         holder.itemStatus.setImageResource(imageStatus);
+
+        // click event
+        holder.itemCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // start new activity passing process data
+                Intent intent = new Intent(mContext, TagActivity.class);
+                intent.putExtra("QRData", String.valueOf(tag.getId()));
+
+                mContext.startActivity(intent);
+            }
+        });
 
         // Record data is optional
         if (rec != null) {
