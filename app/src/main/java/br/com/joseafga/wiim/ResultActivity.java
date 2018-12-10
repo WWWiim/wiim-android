@@ -131,10 +131,13 @@ public class ResultActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        // update preferences
+        // update preferences and service
         getPreferences();
-        // update api url
         mService = WiimApi.getService(apiUrl);
+
+        // continue
+        running = true;
+        loadData();
     }
 
     @Override
