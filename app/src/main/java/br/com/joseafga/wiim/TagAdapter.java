@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
@@ -161,13 +162,21 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             ListIterator<Timeline> iterator = mList.listIterator();
             isUpdate = false; // reset value
 
-            // get greatest id
-            lastRecId = (rec.getId() > lastRecId) ? rec.getId() : lastRecId;
+            // debug
+//            String listString = list.stream().map(Timeline::toString)
+//                    .collect(Collectors.joining(", "));
+//            Log.d("UPDATING", listString);
 
+
+            // get greatest id
+            if (rec != null)
+                lastRecId = (rec.getId() > lastRecId) ? rec.getId() : lastRecId;
+
+            // checks if already have tag
             while (iterator.hasNext()) {
                 Timeline next = iterator.next();
                 Tag t = next.getTag();
-                Record r = next.getRecord();
+                //Record r = next.getRecord();
 
                 if (tag.getId() == t.getId()) {
                     Log.d("UPDATING", tag.getId().toString());

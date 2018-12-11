@@ -1,4 +1,12 @@
+/*
+ * Copyright (C) 2018 José Almeida <jose.afga@gmail.com>
+ *
+ * https://creativecommons.org/licenses/by-nc/4.0/
+ */
+
 package br.com.joseafga.wiim;
+
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -39,6 +47,7 @@ public class TagActivity extends ResultActivity {
                     // wrap timeline in a array to adapter can read it
                     Timeline tl = new Timeline();
                     tl.setTag(tag);
+                    cachedList.clear();
                     cachedList.add(0, tl);
 
                     // display tag item
@@ -70,7 +79,6 @@ public class TagActivity extends ResultActivity {
                     ArrayList<Record> recs = response.body();
                     Record lastRec = null;
 
-                    assert recs != null;
                     if (!recs.isEmpty()) {  // checks if have content
                         for (Record rec : recs) {
                             // TODO use opc time
@@ -80,8 +88,10 @@ public class TagActivity extends ResultActivity {
 
                         // TODO update graph
 
+                        // set record
                         Timeline tl = cachedList.get(0);
                         tl.setRecord(lastRec);
+                        cachedList.add(tl);
 
                         // use response to update items
                         int lastRecId = mTagAdapter.updateList(cachedList);

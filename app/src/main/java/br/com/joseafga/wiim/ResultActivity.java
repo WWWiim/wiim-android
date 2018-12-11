@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2018 José Almeida <jose.afga@gmail.com>
+ *
+ * https://creativecommons.org/licenses/by-nc/4.0/
+ */
+
 package br.com.joseafga.wiim;
 
 import android.content.DialogInterface;
@@ -23,11 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import br.com.joseafga.wiim.models.Process;
 import br.com.joseafga.wiim.models.Timeline;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public abstract class ResultActivity extends AppCompatActivity {
 
@@ -48,7 +50,8 @@ public abstract class ResultActivity extends AppCompatActivity {
     protected WiimApi.Service mService;
     protected Map<String, String> params = new HashMap<>();
     // prevent unnecessary update
-    private boolean running = false;
+    private boolean isRunning = false;
+    private boolean isWaiting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +90,8 @@ public abstract class ResultActivity extends AppCompatActivity {
         // get intent extras from main activity
         qrData = getIntent().getExtras().getString("QRData");
 
-        // set it is running
-        running = true;
+        // set it is isRunning
+        isRunning = true;
         loadData();
     }
 
@@ -127,16 +130,17 @@ public abstract class ResultActivity extends AppCompatActivity {
         mService = WiimApi.getService(apiUrl);
 
         // continue
-        running = true;
-        loadData();
+        isRunning = true;
+        if (!isWaiting)
+            loadDynamicData();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        // stop running and all requests
-        running = false;
+        // stop isRunning and all requests
+        isRunning = false;
         WiimApi.cancelRequests();
     }
 
@@ -184,14 +188,18 @@ public abstract class ResultActivity extends AppCompatActivity {
     public void updateDelayed() {
         final Handler handler = new Handler();
 
+        // return if already exists runnable
+        if (isWaiting) return;
+        isWaiting = true;
+
         // All done, remove progress bar
         mProgressBar.setVisibility(View.GONE);
 
+
         handler.postDelayed(new Runnable() {
             public void run() {
-                // execute only if is running
-                if (!running)
-                    return;
+                isWaiting = false;  // no more waiting
+                if (!isRunning) return;  // execute only if is running
 
                 try {
                     // load data to update process
@@ -235,8 +243,8 @@ public abstract class ResultActivity extends AppCompatActivity {
             faultCount = 0;
             requestCount = 0;
 
-            // stop running and all requests
-            running = false;
+            // stop isRunning and all requests
+            isRunning = false;
             WiimApi.cancelRequests();
 
             // show message alert
