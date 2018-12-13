@@ -197,6 +197,7 @@ public class TagActivity extends ResultActivity {
         // lines and points
         if (DASHED)
             set.enableDashedLine(10f, 5f, 0f); // draw dashed line
+        set.setMode(LineDataSet.Mode.CUBIC_BEZIER); // curve
         set.setColor(Color.parseColor("#aa29c1"));
         set.setCircleColor(Color.parseColor("#884b216b"));
 
