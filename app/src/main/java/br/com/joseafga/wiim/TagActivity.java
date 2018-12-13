@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IFillFormatter;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
@@ -49,9 +50,9 @@ public class TagActivity extends ResultActivity {
     private LineChart mChart = null;
     private YAxis yAxis;
     private XAxis xAxis;
-    private boolean plotData = true;
+    private boolean moveToLastEntry = true;
     // settings
-    private int chartRange = 100;
+    private boolean DASHED = false;
 
     /**
      * Set activity layout
@@ -60,33 +61,36 @@ public class TagActivity extends ResultActivity {
     protected void setLayout() {
         setContentView(R.layout.activity_tag);
 
-        setGraph();
+        mChart = findViewById(R.id.chart);
+        // configure chart
+        setupChart();
+        setupChartAxes();
+        //setupChartLimiters();
+        setupChartData();
+        setChartLegend();
     }
 
     /**
-     *
+     * Configure chart
      */
-    protected void setGraph() {
-        mChart = findViewById(R.id.chart);
+    private void setupChart() {
+        params.put("order", "desc");  // API SQL order by
 
+        // general
         mChart.getDescription().setEnabled(false);
-
-        // touchscreen
-        mChart.setTouchEnabled(true);
+        mChart.setTouchEnabled(true); // touchscreen
 
         // enable scaling and dragging
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        // chart.setScaleXEnabled(true);
-        // chart.setScaleYEnabled(true);
+        mChart.setScaleXEnabled(true);
+        // mChart.setScaleYEnabled(true);
         mChart.setPinchZoom(true);
 
         // drawables
         mChart.setBackgroundColor(Color.WHITE);
-
-        // listeners
-//        mChart.setOnChartValueSelectedListener(this);
         mChart.setDrawGridBackground(true);
+        mChart.setGridBackgroundColor(Color.WHITE);
 
         // create marker to display box when values are selected
 //        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
@@ -108,22 +112,36 @@ public class TagActivity extends ResultActivity {
         yAxis.enableGridDashedLine(10f, 10f, 0f);
 
         // axis range
-//        yAxis.setAxisMaximum(2000f);
-//        yAxis.setAxisMinimum(0f);
+        //yAxis.setAxisMaximum(2000f);
+        //yAxis.setAxisMinimum(0f);
 
-//        setGraphLimiters();
-        setGraphData();
+        //setChartLimiters();
+        //setChartData();
 
-        // draw points over time
-        mChart.animateX(1000);
-
-        // get the legend (only possible after setting data)
-        Legend l = mChart.getLegend();
-        // draw legend entries as lines
-        l.setForm(LegendForm.LINE);
+        LineData data = new LineData();
+        data.setValueTextColor(Color.WHITE);
+        // add empty data
+        mChart.setData(data);
     }
 
-    public void setGraphLimiters(){
+    private void setupChartAxes() {
+        XAxis xl = mChart.getXAxis();
+        xl.setTextColor(Color.BLACK);
+        xl.setDrawGridLines(false);
+        xl.setAvoidFirstLastClipping(true);
+        xl.setEnabled(true);
+
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setTextColor(Color.BLACK);
+        //leftAxis.setAxisMaximum(100f);
+        //leftAxis.setAxisMinimum(0f);
+        leftAxis.setDrawGridLines(true);
+
+        YAxis rightAxis = mChart.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    private void setupChartLimiters(){
         // Create Limit Lines //
         LimitLine ll1 = new LimitLine(150f, "Upper Limit");
         ll1.setLineWidth(4f);
@@ -148,146 +166,117 @@ public class TagActivity extends ResultActivity {
         yAxis.addLimitLine(ll2);
     }
 
-    /**
-     * set initial data to graph
-     */
-    public void setGraphData() {
-        // add empty data
+    private void setupChartData() {
         LineData data = new LineData();
         data.setValueTextColor(Color.WHITE);
+
+        // add empty data
         mChart.setData(data);
     }
 
+    private void setChartLegend() {
+        // get the legend (only possible after setting data)
+        Legend l = mChart.getLegend();
+        l.setEnabled(false);
+
+        if (l.isEnabled()) {
+            // draw legend entries as lines
+            l.setForm(LegendForm.LINE);
+
+            // customize legend entry
+            if (DASHED)
+                l.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+
+            l.setFormLineWidth(1f);
+            l.setFormSize(15.f);
+        }
+    }
 
     /**
-     * Set graph legend
+     * Create a line chart style
      *
-     * @param set Data set of the line
+     * @return Line data set
      */
-    public void setGraphLegend(LineDataSet set) {
-        setGraphLegend(set, false);
-    }
+    private LineDataSet createChartLine() {// create a dataset and give it a type
+        LineDataSet set = new LineDataSet(null, mTag.getAlias());
 
-    /**
-     * Set graph legend
-     *
-     * @param set  Data set of the line
-     * @param dashed The line is dashed?
-     */
-    public void setGraphLegend(LineDataSet set, boolean dashed) {
-        // customize legend entry
-        if (dashed)
-            set.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+        set.setDrawIcons(false);
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
-        set.setFormLineWidth(1f);
-        set.setFormSize(15.f);
-    }
+        // lines and points
+        if (DASHED)
+            set.enableDashedLine(10f, 5f, 0f); // draw dashed line
+        set.setColor(Color.parseColor("#aa29c1"));
+        set.setCircleColor(Color.parseColor("#884b216b"));
 
-    /**
-     * set initial data to graph
-     */
-    public void addGraphData(ArrayList<Record> recs) {
-        ArrayList<Entry> values = new ArrayList<>();
+        // line thickness and point size
+        set.setLineWidth(2f);
+        set.setCircleRadius(4f);
 
-        for (Record rec : recs) {
-            float val = rec.getValue().floatValue();
-            Log.d("GRAPH", String.valueOf(val));
+        // draw points as solid circles
+        set.setDrawCircleHole(false);
 
-            values.add(new Entry(values.size(), val, 0));
-        }
+        // text size of values
+        set.setValueTextSize(9f);
 
-        LineDataSet set1;
+        // draw selection line as dashed
+        //set1.enableDashedHighlightLine(10f, 5f, 0f);
+        set.setHighlightEnabled(false);
 
-        if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
-            set1.notifyDataSetChanged();
-            mChart.getData().notifyDataChanged();
-            mChart.notifyDataSetChanged();
-
-            // move chart
-            mChart.setVisibleXRangeMaximum(100);
-            mChart.moveViewToX(mChart.getData().getEntryCount());
-        } else {
-            // create a dataset and give it a type
-            set1 = new LineDataSet(values, mTag.getAlias());
-
-            set1.setDrawIcons(false);
-
-            // lines and points
-            //set1.enableDashedLine(10f, 5f, 0f); // draw dashed line
-            set1.setColor(Color.parseColor("#aa29c1"));
-            set1.setCircleColor(Color.parseColor("#884b216b"));
-
-            // line thickness and point size
-            set1.setLineWidth(2f);
-            set1.setCircleRadius(4f);
-
-            // draw points as solid circles
-            set1.setDrawCircleHole(false);
-
-            // legend
-            //setGraphLegend(set1);
-
-            // text size of values
-            set1.setValueTextSize(9f);
-
-            // draw selection line as dashed
-            //set1.enableDashedHighlightLine(10f, 5f, 0f);
-
-            // set the filled area
-            set1.setDrawFilled(true);
-            set1.setFillFormatter(new IFillFormatter() {
-                @Override
-                public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                    return mChart.getAxisLeft().getAxisMinimum();
-                }
-            });
-
-            // set color of filled area
-            if (Utils.getSDKInt() >= 18) {
-                // drawables only supported on api level 18 and above
-                Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_fucsia);
-                set1.setFillDrawable(drawable);
-            } else {
-                set1.setFillColor(Color.BLACK);
-            }
-
-            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-            dataSets.add(set1); // add the data sets
-
-            // create a data object with the data sets
-            LineData data = new LineData(dataSets);
-
-            // set data
-            mChart.setData(data);
-        }
-
-    }
-
-    private void feedMultiple() {
-
-        if (mThread != null){
-            mThread.interrupt();
-        }
-
-        mThread = new Thread(new Runnable() {
-
+        // set the filled area
+        set.setDrawFilled(true);
+        set.setFillFormatter(new IFillFormatter() {
             @Override
-            public void run() {
-                while (true){
-                    plotData = true;
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
+            public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
+                return mChart.getAxisLeft().getAxisMinimum();
             }
         });
 
-        mThread.start();
+        // set color of filled area
+        if (Utils.getSDKInt() >= 18) {
+            // drawables only supported on api level 18 and above
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_fucsia);
+            set.setFillDrawable(drawable);
+        } else {
+            set.setFillColor(Color.BLACK);
+        }
+
+        // To show values of each point
+        set.setDrawValues(true);
+
+        return set;
+    }
+
+    private void addChartEntries(ArrayList<Record> recs) {
+        LineData data = mChart.getData();
+
+        if (data != null) {
+            ILineDataSet set = data.getDataSetByIndex(0);
+
+            if (set == null) {
+                set = createChartLine();
+                data.addDataSet(set);
+            }
+
+            for (Record rec : recs) {
+                float val = rec.getValue().floatValue();
+
+                data.addEntry(new Entry(set.getEntryCount(), val), 0);
+            }
+
+            // let the chart know it's data has changed
+            data.notifyDataChanged();
+            mChart.notifyDataSetChanged();
+
+            // limit the number of visible entries
+            mChart.setVisibleXRangeMaximum(100);
+
+            // move to the latest entry
+            mChart.moveViewToX(data.getEntryCount());
+
+            // draw points over time
+            //mChart.animateX(1000);
+        }
     }
 
     /**
@@ -347,7 +336,7 @@ public class TagActivity extends ResultActivity {
                         }
 
                         // TODO update graph
-                        addGraphData(recs);
+                        addChartEntries(recs);
 
                         // set record
                         Timeline tl = cachedList.get(0);
@@ -378,7 +367,10 @@ public class TagActivity extends ResultActivity {
 
     @Override
     protected void onDestroy() {
-//        mThread.interrupt();
         super.onDestroy();
+
+        if (mThread != null) {
+            mThread.interrupt();
+        }
     }
 }
