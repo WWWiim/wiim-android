@@ -42,9 +42,11 @@ public class TagActivity extends ResultActivity {
 
     // cache timeline list to store tag
     private ArrayList<Timeline> cachedList = new ArrayList<>();
+    // tag
+    private Tag mTag = null;
     // chart
-    private Thread mThread;
-    private LineChart mChart;
+    private Thread mThread = null;
+    private LineChart mChart = null;
     private YAxis yAxis;
     private XAxis xAxis;
     private boolean plotData = true;
@@ -123,13 +125,6 @@ public class TagActivity extends ResultActivity {
 
     public void setGraphLimiters(){
         // Create Limit Lines //
-        LimitLine llXAxis = new LimitLine(9f, "Index 10");
-        llXAxis.setLineWidth(4f);
-        llXAxis.enableDashedLine(10f, 10f, 0f);
-        llXAxis.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
-        llXAxis.setTextSize(10f);
-        llXAxis.setTypeface(Typeface.DEFAULT);
-
         LimitLine ll1 = new LimitLine(150f, "Upper Limit");
         ll1.setLineWidth(4f);
         ll1.enableDashedLine(10f, 10f, 0f);
@@ -151,7 +146,6 @@ public class TagActivity extends ResultActivity {
         // add limit lines
         yAxis.addLimitLine(ll1);
         yAxis.addLimitLine(ll2);
-        //xAxis.addLimitLine(llXAxis);
     }
 
     /**
@@ -193,28 +187,6 @@ public class TagActivity extends ResultActivity {
      * set initial data to graph
      */
     public void addGraphData(ArrayList<Record> recs) {
-//        LineData data = mChart.getData();
-//
-//        if (data != null) {
-//            ILineDataSet set = data.getDataSetByIndex(0);
-//
-//            if (set != null) {
-//                set = createSet();
-//                data.addDataSet(set);
-//            }
-//
-//            float val = Float.valueOf(rec.getValue().toString());
-//            Log.d("GRAPH", String.valueOf(val));
-//
-//
-//            data.addEntry(new Entry(set.getEntryCount(), val), 0);
-//            data.notifyDataChanged();
-//
-//            mChart.setVisibleXRangeMaximum(100);
-//            mChart.moveViewToX(data.getEntryCount());
-//        }
-
-
         ArrayList<Entry> values = new ArrayList<>();
 
         for (Record rec : recs) {
@@ -232,14 +204,18 @@ public class TagActivity extends ResultActivity {
             set1.notifyDataSetChanged();
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
+
+            // move chart
+            mChart.setVisibleXRangeMaximum(100);
+            mChart.moveViewToX(mChart.getData().getEntryCount());
         } else {
             // create a dataset and give it a type
-            set1 = new LineDataSet(values, "DataSet 1");
+            set1 = new LineDataSet(values, mTag.getAlias());
 
             set1.setDrawIcons(false);
 
-//            set1.enableDashedLine(10f, 5f, 0f); // draw dashed line
-            // black lines and points
+            // lines and points
+            //set1.enableDashedLine(10f, 5f, 0f); // draw dashed line
             set1.setColor(Color.parseColor("#aa29c1"));
             set1.setCircleColor(Color.parseColor("#884b216b"));
 
@@ -250,13 +226,14 @@ public class TagActivity extends ResultActivity {
             // draw points as solid circles
             set1.setDrawCircleHole(false);
 
-            setGraphLegend(set1);
+            // legend
+            //setGraphLegend(set1);
 
             // text size of values
             set1.setValueTextSize(9f);
 
             // draw selection line as dashed
-            set1.enableDashedHighlightLine(10f, 5f, 0f);
+            //set1.enableDashedHighlightLine(10f, 5f, 0f);
 
             // set the filled area
             set1.setDrawFilled(true);
@@ -322,14 +299,14 @@ public class TagActivity extends ResultActivity {
             @Override
             public void onResponse(Call<Tag> call, Response<Tag> response) {
                 try {
-                    Tag tag = response.body();
+                    mTag = response.body();
 
                     // set and updates
-                    setToolbarTexts(tag.getAlias(), tag.getComment(), tag.getName());
+                    setToolbarTexts(mTag.getAlias(), mTag.getComment(), mTag.getName());
 
                     // wrap timeline in a array to adapter can read it
                     Timeline tl = new Timeline();
-                    tl.setTag(tag);
+                    tl.setTag(mTag);
                     cachedList.clear();
                     cachedList.add(0, tl);
 
