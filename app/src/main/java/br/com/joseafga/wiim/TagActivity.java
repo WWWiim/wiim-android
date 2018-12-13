@@ -24,8 +24,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.Utils;
 
 import java.text.DecimalFormat;
@@ -35,6 +37,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import br.com.joseafga.wiim.helpers.MyMarkerView;
 import br.com.joseafga.wiim.helpers.ValueFormatter;
 import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
@@ -43,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TagActivity extends ResultActivity {
+public class TagActivity extends ResultActivity implements OnChartValueSelectedListener {
 
     // cache timeline list to store tag
     private ArrayList<Timeline> cachedList = new ArrayList<>();
@@ -84,6 +87,9 @@ public class TagActivity extends ResultActivity {
         mChart.getDescription().setEnabled(false);
         mChart.setTouchEnabled(true); // touchscreen
 
+        // set listeners
+        mChart.setOnChartValueSelectedListener(this);
+
         // enable scaling and dragging
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
@@ -96,17 +102,13 @@ public class TagActivity extends ResultActivity {
         mChart.setDrawGridBackground(false);
         //mChart.setGridBackgroundColor(Color.WHITE);
 
-        // create marker to display box when values are selected
-//        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
-
-        // Set the marker to the chart
-//        mv.setChartView(chart);
-//        chart.setMarker(mv);
-
         LineData data = new LineData();
         data.setValueTextColor(Color.WHITE);
         // add empty data
         mChart.setData(data);
+
+        // set market to select
+        setChartMarkerView();
     }
 
     private void setupChartAxes() {
@@ -123,6 +125,7 @@ public class TagActivity extends ResultActivity {
         // vertical grid lines
         //xAxis.setLabelCount(5, true);  // number of grids
         xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setGridColor(Color.GRAY);
         xAxis.setGranularity(1000f); // 100 milliseconds
         xAxis.setCenterAxisLabels(false);
         xAxis.setValueFormatter(new ValueFormatter() {
@@ -145,6 +148,7 @@ public class TagActivity extends ResultActivity {
         yAxis.setAxisLineColor(Color.GRAY);
         // horizontal grid lines
         yAxis.enableGridDashedLine(10f, 10f, 0f);
+        yAxis.setGridColor(Color.GRAY);
         yAxis.setValueFormatter(new ValueFormatter() {
             private DecimalFormat mFormat =
                     new DecimalFormat("#.");
@@ -192,12 +196,14 @@ public class TagActivity extends ResultActivity {
         yAxis.addLimitLine(ll2);
     }
 
-    private void setupChartData() {
-        LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
+    private void setChartMarkerView() {
+        // create marker to display box when values are selected
+        MyMarkerView mv= new MyMarkerView(
+                getApplicationContext(), R.layout.marker_view, this);
 
-        // add empty data
-        mChart.setData(data);
+        // Set the marker to the chart
+        mv.setChartView(mChart);
+        mChart.setMarker(mv);
     }
 
     private void setChartLegend() {
@@ -218,6 +224,14 @@ public class TagActivity extends ResultActivity {
         }
     }
 
+    private void setupChartData() {
+        LineData data = new LineData();
+        data.setValueTextColor(Color.WHITE);
+
+        // add empty data
+        mChart.setData(data);
+    }
+
     /**
      * Create a line chart style
      *
@@ -232,7 +246,12 @@ public class TagActivity extends ResultActivity {
         // lines and points
         if (DASHED)
             set.enableDashedLine(10f, 5f, 0f); // draw dashed line
-        //set.setMode(LineDataSet.Mode.CUBIC_BEZIER); // curve
+
+        //set.setMode(LineDataSet.Mode.CUBIC_BEZIER); // hard curve
+        //set.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER); // soft curve
+        set.setMode(LineDataSet.Mode.LINEAR); // no curve
+
+        // colors
         set.setColor(Color.parseColor("#aa29c1"));
         set.setCircleColor(Color.parseColor("#4b216b"));
 
@@ -247,8 +266,10 @@ public class TagActivity extends ResultActivity {
         set.setValueTextSize(9f);
 
         // draw selection line as dashed
-        //set1.enableDashedHighlightLine(10f, 5f, 0f);
-        set.setHighlightEnabled(false);
+        set.setHighlightEnabled(true);
+        set.setHighlightLineWidth(0.1f);
+        set.enableDashedHighlightLine(10f, 10f, 0f);
+        set.setHighLightColor(Color.RED);
 
         // set the filled area
         set.setDrawFilled(true);
@@ -316,6 +337,22 @@ public class TagActivity extends ResultActivity {
         // draw points over time
         //mChart.animateX(1000);
     }
+
+
+    /**
+     * Runs when a point is selected
+     *
+     * @param e entry
+     * @param h highlight
+     */
+    @Override
+    public void onValueSelected(Entry e, Highlight h) { }
+
+    /**
+     * Runs when click on blank part of chart
+     */
+    @Override
+    public void onNothingSelected() { }
 
     /**
      * Get data from API of server address
@@ -407,5 +444,14 @@ public class TagActivity extends ResultActivity {
         if (mThread != null) {
             mThread.interrupt();
         }
+    }
+
+    /**
+     * The X axis reference value
+     *
+     * @return number of milliseconds of first entry
+     */
+    public long getxRef() {
+        return xRef;
     }
 }
