@@ -12,7 +12,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -27,13 +26,16 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IFillFormatter;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.Utils;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
+import br.com.joseafga.wiim.helpers.ValueFormatter;
 import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
 import br.com.joseafga.wiim.models.Timeline;
@@ -52,9 +54,10 @@ public class TagActivity extends ResultActivity {
     private LineChart mChart = null;
     private YAxis yAxis;
     private XAxis xAxis;
-    private boolean moveToLastEntry = true;
-    // settings
-    private boolean DASHED = false;
+    private long xRef = 0;
+    // hard settings
+    private final boolean DASHED = false;
+    private final Locale LocaleBR = new Locale("pt", "BR");
 
     /**
      * Set activity layout
@@ -90,8 +93,8 @@ public class TagActivity extends ResultActivity {
 
         // drawables
         mChart.setBackgroundColor(Color.WHITE);
-        mChart.setDrawGridBackground(true);
-        mChart.setGridBackgroundColor(Color.WHITE);
+        mChart.setDrawGridBackground(false);
+        //mChart.setGridBackgroundColor(Color.WHITE);
 
         // create marker to display box when values are selected
 //        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
@@ -111,18 +114,50 @@ public class TagActivity extends ResultActivity {
         xAxis = mChart.getXAxis();
         yAxis = mChart.getAxisLeft();
 
+        // X Axis
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        // colors
         xAxis.setTextColor(Color.BLACK);
-        yAxis.setTextColor(Color.BLACK);
-        // disable dual axis (only use LEFT axis)
-        mChart.getAxisRight().setEnabled(false);
-
+        xAxis.setDrawAxisLine(true);
+        xAxis.setAxisLineWidth(1f);
+        xAxis.setAxisLineColor(Color.GRAY);
         // vertical grid lines
+        //xAxis.setLabelCount(5, true);  // number of grids
         xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setGranularity(1000f); // 100 milliseconds
+        xAxis.setCenterAxisLabels(false);
+        xAxis.setValueFormatter(new ValueFormatter() {
+
+            private final SimpleDateFormat mFormat =
+                    new SimpleDateFormat("HH:mm:ss", LocaleBR);
+
+            @Override
+            public String getFormattedValue(float value) {
+
+                long millis = TimeUnit.MILLISECONDS.toMillis((long) value + xRef);
+                return mFormat.format(new Date(millis));
+            }
+        });
+
+        // Y Axis
+        yAxis.setTextColor(Color.BLACK);// color
+        yAxis.setDrawAxisLine(true);
+        yAxis.setAxisLineWidth(1f);
+        yAxis.setAxisLineColor(Color.GRAY);
         // horizontal grid lines
         yAxis.enableGridDashedLine(10f, 10f, 0f);
+        yAxis.setValueFormatter(new ValueFormatter() {
+            private DecimalFormat mFormat =
+                    new DecimalFormat("#.");
+
+            @Override
+            public String getFormattedValue(float value) {
+                //return mFormat.format(value); // no format
+                return String.valueOf(value);
+            }
+        });
+
+        // disable dual axis (only use LEFT axis)
+        mChart.getAxisRight().setEnabled(false);
 
         // axis range
         //yAxis.setAxisMaximum(2000f);
@@ -132,7 +167,7 @@ public class TagActivity extends ResultActivity {
         rightAxis.setEnabled(false);
     }
 
-    private void setupChartLimiters(){
+    private void setupChartLimiters() {
         // Create Limit Lines //
         LimitLine ll1 = new LimitLine(150f, "Upper Limit");
         ll1.setLineWidth(4f);
@@ -197,16 +232,16 @@ public class TagActivity extends ResultActivity {
         // lines and points
         if (DASHED)
             set.enableDashedLine(10f, 5f, 0f); // draw dashed line
-        set.setMode(LineDataSet.Mode.CUBIC_BEZIER); // curve
+        //set.setMode(LineDataSet.Mode.CUBIC_BEZIER); // curve
         set.setColor(Color.parseColor("#aa29c1"));
-        set.setCircleColor(Color.parseColor("#884b216b"));
+        set.setCircleColor(Color.parseColor("#4b216b"));
 
         // line thickness and point size
         set.setLineWidth(2f);
-        set.setCircleRadius(4f);
+        set.setCircleRadius(3f);
 
         // draw points as solid circles
-        set.setDrawCircleHole(false);
+        set.setDrawCircleHole(true);
 
         // text size of values
         set.setValueTextSize(9f);
@@ -229,12 +264,13 @@ public class TagActivity extends ResultActivity {
             // drawables only supported on api level 18 and above
             Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_fucsia);
             set.setFillDrawable(drawable);
+            //set.setFillColor(Color.parseColor("#4b216b"));
         } else {
             set.setFillColor(Color.BLACK);
         }
 
         // To show values of each point
-        set.setDrawValues(true);
+        set.setDrawValues(false);
 
         return set;
     }
@@ -242,33 +278,43 @@ public class TagActivity extends ResultActivity {
     private void addChartEntries(ArrayList<Record> recs) {
         LineData data = mChart.getData();
 
-        if (data != null) {
-            ILineDataSet set = data.getDataSetByIndex(0);
+        if (data == null) return; // do nothing
 
-            if (set == null) {
-                set = createChartLine();
-                data.addDataSet(set);
-            }
+        ILineDataSet set = data.getDataSetByIndex(0);
 
-            for (Record rec : recs) {
-                float val = rec.getValue().floatValue();
-
-                data.addEntry(new Entry(set.getEntryCount(), val), 0);
-            }
-
-            // let the chart know it's data has changed
-            data.notifyDataChanged();
-            mChart.notifyDataSetChanged();
-
-            // limit the number of visible entries
-            mChart.setVisibleXRangeMaximum(20);
-
-            // move to the latest entry
-            mChart.moveViewToX(data.getEntryCount());
-
-            // draw points over time
-            //mChart.animateX(1000);
+        if (set == null) {
+            set = createChartLine();
+            data.addDataSet(set);
         }
+
+        for (Record rec : recs) {
+            float val = rec.getValue().floatValue();
+            long time = rec.getTimeOpc().getTime();
+
+            // update last value
+            if (xRef == 0) xRef = time;
+
+            data.addEntry(new Entry(time - xRef, val), 0);
+
+            Log.d("RECORD",
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", LocaleBR)
+                            .format(rec.getTimeOpc()));
+
+            Log.d("RECORD", String.valueOf(time - xRef));
+        }
+
+        // let the chart know it's data has changed
+        data.notifyDataChanged();
+        mChart.notifyDataSetChanged();
+
+        // limit the number of visible milliseconds
+        mChart.setVisibleXRangeMaximum(60 * 1000);
+
+        // move to the latest entry
+        mChart.moveViewToX(data.getXMax());
+
+        // draw points over time
+        //mChart.animateX(1000);
     }
 
     /**
@@ -322,11 +368,6 @@ public class TagActivity extends ResultActivity {
                             // TODO use opc time
                             if (lastRec == null || rec.getId() > lastRec.getId())
                                 lastRec = rec;  // get last record
-
-                            Log.d("RECORD",
-                                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
-                                            Locale.forLanguageTag("pt-BR"))
-                                            .format(rec.getTimeOpc()));
                         }
 
                         // update graph

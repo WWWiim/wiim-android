@@ -48,6 +48,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     private ArrayList<Timeline> mList;
     //private Map<Integer, ViewHolder> mCards = new HashMap<Integer, ViewHolder>();
     private Picasso mPicasso = Picasso.get();
+    // hard settings
+    private final Locale LocaleBR = new Locale("pt", "BR");
 
     /**
      * Class Constructor
@@ -141,7 +143,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         if (rec != null) {
             holder.itemValue.setText(String.valueOf(rec.getValue()));
             holder.itemDate.setText(
-                    new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS", Locale.forLanguageTag("pt-BR"))
+                    new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS", LocaleBR)
                             .format(rec.getTimeOpc())
                             .toString()); // format date
             // TODO: quality is good|?bad
