@@ -23,13 +23,16 @@
         <android.support.v7.widget.CardView
             android:id="@+id/chart_card"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="240dp"
             android:layout_margin="4dp"
             app:cardCornerRadius="4dp">
+
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:layout_marginBottom="@dimen/spacing_small">
 
             </com.github.mikephil.charting.charts.LineChart>
         </android.support.v7.widget.CardView>

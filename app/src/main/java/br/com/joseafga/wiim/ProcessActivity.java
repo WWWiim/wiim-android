@@ -20,7 +20,7 @@ public class ProcessActivity extends ResultActivity {
      * Set activity layout
      */
     @Override
-    protected void setLayout() {
+    protected void addOnCreate() {
         setContentView(R.layout.activity_process);
     }
 

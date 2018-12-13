@@ -58,7 +58,7 @@ public class TagActivity extends ResultActivity {
      * Set activity layout
      */
     @Override
-    protected void setLayout() {
+    protected void addOnCreate() {
         setContentView(R.layout.activity_tag);
 
         mChart = findViewById(R.id.chart);
@@ -83,7 +83,7 @@ public class TagActivity extends ResultActivity {
         // enable scaling and dragging
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        mChart.setScaleXEnabled(true);
+        // mChart.setScaleXEnabled(true);
         // mChart.setScaleYEnabled(true);
         mChart.setPinchZoom(true);
 
@@ -99,10 +99,22 @@ public class TagActivity extends ResultActivity {
 //        mv.setChartView(chart);
 //        chart.setMarker(mv);
 
+        LineData data = new LineData();
+        data.setValueTextColor(Color.WHITE);
+        // add empty data
+        mChart.setData(data);
+    }
+
+    private void setupChartAxes() {
         // Axis Style
         xAxis = mChart.getXAxis();
         yAxis = mChart.getAxisLeft();
 
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        // colors
+        xAxis.setTextColor(Color.BLACK);
+        yAxis.setTextColor(Color.BLACK);
         // disable dual axis (only use LEFT axis)
         mChart.getAxisRight().setEnabled(false);
 
@@ -114,28 +126,6 @@ public class TagActivity extends ResultActivity {
         // axis range
         //yAxis.setAxisMaximum(2000f);
         //yAxis.setAxisMinimum(0f);
-
-        //setChartLimiters();
-        //setChartData();
-
-        LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
-        // add empty data
-        mChart.setData(data);
-    }
-
-    private void setupChartAxes() {
-        XAxis xl = mChart.getXAxis();
-        xl.setTextColor(Color.BLACK);
-        xl.setDrawGridLines(false);
-        xl.setAvoidFirstLastClipping(true);
-        xl.setEnabled(true);
-
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTextColor(Color.BLACK);
-        //leftAxis.setAxisMaximum(100f);
-        //leftAxis.setAxisMinimum(0f);
-        leftAxis.setDrawGridLines(true);
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setEnabled(false);
@@ -269,7 +259,7 @@ public class TagActivity extends ResultActivity {
             mChart.notifyDataSetChanged();
 
             // limit the number of visible entries
-            mChart.setVisibleXRangeMaximum(100);
+            mChart.setVisibleXRangeMaximum(20);
 
             // move to the latest entry
             mChart.moveViewToX(data.getEntryCount());
@@ -298,9 +288,6 @@ public class TagActivity extends ResultActivity {
                     tl.setTag(mTag);
                     cachedList.clear();
                     cachedList.add(0, tl);
-
-                    // display tag item
-                    mTagAdapter.updateList(cachedList);
 
                     loadDynamicData();
                 } catch (Exception e) {

@@ -58,7 +58,7 @@ public abstract class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // set layout view
-        setLayout();
+        addOnCreate();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -89,10 +89,6 @@ public abstract class ResultActivity extends AppCompatActivity {
 
         // get intent extras from main activity
         qrData = getIntent().getExtras().getString("QRData");
-
-        // set it is isRunning
-        isRunning = true;
-        loadData();
     }
 
     @Override
@@ -129,10 +125,9 @@ public abstract class ResultActivity extends AppCompatActivity {
         getPreferences();
         mService = WiimApi.getService(apiUrl);
 
-        // continue
+        // run data loads
         isRunning = true;
-        if (!isWaiting)
-            loadDynamicData();
+        loadData();
     }
 
     @Override
@@ -147,7 +142,7 @@ public abstract class ResultActivity extends AppCompatActivity {
     /**
      * Set activity layout
      */
-    protected abstract void setLayout();
+    protected abstract void addOnCreate();
 
     /**
      * Get and/or update preferentes
