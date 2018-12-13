@@ -6,6 +6,9 @@
 
 package br.com.joseafga.wiim;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -82,11 +85,16 @@ public class WiimApi {
      * @return retrofit instance
      */
     public static Service getService(String url) {
+        // Set date format
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
+                .create();
+
         // Create a very simple REST adapter which points the Wiim API.
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         // Create an instance of our Wiim API interface.

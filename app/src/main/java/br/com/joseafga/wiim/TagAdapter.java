@@ -27,8 +27,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -138,7 +140,10 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         // Record data is optional
         if (rec != null) {
             holder.itemValue.setText(String.valueOf(rec.getValue()));
-            holder.itemDate.setText(rec.getTimeOpc().substring(11)); // substring to remove d/m/Y
+            holder.itemDate.setText(
+                    new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS", Locale.forLanguageTag("pt-BR"))
+                            .format(rec.getTimeOpc())
+                            .toString()); // format date
             // TODO: quality is good|?bad
         }
     }

@@ -9,6 +9,8 @@ package br.com.joseafga.wiim.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * This class represents Record Model
  */
@@ -19,10 +21,10 @@ public class Record {
     private Integer id;
     @SerializedName("time_opc")
     @Expose
-    private String timeOpc;
+    private Date timeOpc;
     @SerializedName("time_db")
     @Expose
-    private String timeDb;
+    private Date timeDb;
     @SerializedName("value")
     @Expose
     private Double value;
@@ -41,19 +43,19 @@ public class Record {
         this.id = id;
     }
 
-    public String getTimeOpc() {
+    public Date getTimeOpc() {
         return timeOpc;
     }
 
-    public void setTimeOpc(String timeOpc) {
+    public void setTimeOpc(Date timeOpc) {
         this.timeOpc = timeOpc;
     }
 
-    public String getTimeDb() {
+    public Date getTimeDb() {
         return timeDb;
     }
 
-    public void setTimeDb(String timeDb) {
+    public void setTimeDb(Date timeDb) {
         this.timeDb = timeDb;
     }
 

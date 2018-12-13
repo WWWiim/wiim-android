@@ -30,7 +30,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.Utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import br.com.joseafga.wiim.models.Record;
 import br.com.joseafga.wiim.models.Tag;
@@ -68,15 +70,14 @@ public class TagActivity extends ResultActivity {
         //setupChartLimiters();
         setupChartData();
         setChartLegend();
+
+        params.put("order", "asc");  // API SQL order by
     }
 
     /**
      * Configure chart
      */
     private void setupChart() {
-        params.put("order", "desc");  // API SQL order by
-
-        // general
         mChart.getDescription().setEnabled(false);
         mChart.setTouchEnabled(true); // touchscreen
 
@@ -320,9 +321,14 @@ public class TagActivity extends ResultActivity {
                             // TODO use opc time
                             if (lastRec == null || rec.getId() > lastRec.getId())
                                 lastRec = rec;  // get last record
+
+                            Log.d("RECORD",
+                                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
+                                            Locale.forLanguageTag("pt-BR"))
+                                            .format(rec.getTimeOpc()));
                         }
 
-                        // TODO update graph
+                        // update graph
                         addChartEntries(recs);
 
                         // set record
