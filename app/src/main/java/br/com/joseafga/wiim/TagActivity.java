@@ -238,7 +238,7 @@ public class TagActivity extends ResultActivity {
 
         // line thickness and point size
         set.setLineWidth(2f);
-        set.setCircleRadius(3f);
+        set.setCircleRadius(4f);
 
         // draw points as solid circles
         set.setDrawCircleHole(true);
