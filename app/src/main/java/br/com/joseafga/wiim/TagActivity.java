@@ -11,7 +11,6 @@ import android.graphics.DashPathEffect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -198,7 +197,7 @@ public class TagActivity extends ResultActivity implements OnChartValueSelectedL
 
     private void setChartMarkerView() {
         // create marker to display box when values are selected
-        MyMarkerView mv= new MyMarkerView(
+        MyMarkerView mv = new MyMarkerView(
                 this, R.layout.marker_view);
 
         // Set the marker to the chart
@@ -316,12 +315,6 @@ public class TagActivity extends ResultActivity implements OnChartValueSelectedL
             if (xRef == 0) xRef = time;
 
             data.addEntry(new Entry(time - xRef, val), 0);
-
-            Log.d("RECORD",
-                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", LocaleBR)
-                            .format(rec.getTimeOpc()));
-
-            Log.d("RECORD", String.valueOf(time - xRef));
         }
 
         // let the chart know it's data has changed
@@ -346,13 +339,15 @@ public class TagActivity extends ResultActivity implements OnChartValueSelectedL
      * @param h highlight
      */
     @Override
-    public void onValueSelected(Entry e, Highlight h) { }
+    public void onValueSelected(Entry e, Highlight h) {
+    }
 
     /**
      * Runs when click on blank part of chart
      */
     @Override
-    public void onNothingSelected() { }
+    public void onNothingSelected() {
+    }
 
     /**
      * Get data from API of server address

@@ -173,12 +173,6 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             ListIterator<Timeline> iterator = mList.listIterator();
             isUpdate = false; // reset value
 
-            // debug
-//            String listString = list.stream().map(Timeline::toString)
-//                    .collect(Collectors.joining(", "));
-//            Log.d("UPDATING", listString);
-
-
             // get greatest id
             if (rec != null)
                 lastRecId = (rec.getId() > lastRecId) ? rec.getId() : lastRecId;
@@ -201,9 +195,6 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
                 // create a new tag item
                 mList.add(tl);
         }
-
-//        mList.clear();
-//        mList.addAll(list);
 
         // TODO improve it
         if (list != null && !list.isEmpty())
