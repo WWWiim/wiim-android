@@ -32,8 +32,8 @@ public class MyMarkerView extends MarkerView {
     private final Locale LocaleBR = new Locale("pt", "BR");
     private TagActivity mActivity;
 
-    public MyMarkerView(Context context, int layoutResource, TagActivity activity) {
-        super(context, layoutResource);
+    public MyMarkerView(TagActivity activity, int layoutResource) {
+        super(activity, layoutResource);
         mActivity = activity;
 
         tvContent = findViewById(R.id.tvContent);

@@ -199,7 +199,7 @@ public class TagActivity extends ResultActivity implements OnChartValueSelectedL
     private void setChartMarkerView() {
         // create marker to display box when values are selected
         MyMarkerView mv= new MyMarkerView(
-                getApplicationContext(), R.layout.marker_view, this);
+                this, R.layout.marker_view);
 
         // Set the marker to the chart
         mv.setChartView(mChart);
