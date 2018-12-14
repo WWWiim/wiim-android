@@ -131,6 +131,10 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         holder.itemCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // change to tag activity only in process activity
+                if (mContext.getClass().getSimpleName().equals("TagActivity"))
+                    return;
+
                 // start new activity passing process data
                 Intent intent = new Intent(mContext, TagActivity.class);
                 intent.putExtra("QRData", String.valueOf(tag.getId()));
