@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2018 José Almeida <jose.afga@gmail.com>
  *
- * https://creativecommons.org/licenses/by-nc/4.0/
+ * License AGPLv3/Commercial, see LICENSE file for more details
  */
 
 package br.com.joseafga.wiim.helpers;

@@ -4,10 +4,10 @@
 ### Trabalho de Conclusão de Curso
 Aplicativo para dispositivos móveis com sistema operacional Android.
 
-### Resumo
+## Resumo
 Trabalhando nisso ...
 
-### Características
+## Características
 - `OPC-UA` protocolo principal para aquisição de dados 
 - `RESTful API` fácil acesso aos dados
 - `Real-time` prove dados em tempo real
@@ -15,6 +15,6 @@ Trabalhando nisso ...
 - `Mobile app` acesse em todo lugar
 - `QR Code` para rápida identificação
 
-## Licença
-
-`CC BY-NC 4.0` – [Atribuição-NãoComercial 4.0 Internacional](https://creativecommons.org/licenses/by-nc/4.0/deed.pt_BR)
+### Licença
+Livre para uso pessoal, para uso comercial, por favor, contate-nos.  
+`Licença AGPLv3/Comercial` - veja o arquivo [LICENSE](LICENSE "Arquivo de licença") para mais detalhes.

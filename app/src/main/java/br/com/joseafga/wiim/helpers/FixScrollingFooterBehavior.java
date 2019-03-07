@@ -1,7 +1,7 @@
 /*
  * Copyright (C) ${YEAR} José Almeida <jose.afga@gmail.com>
  *
- * https://creativecommons.org/licenses/by-nc/4.0/
+ * License AGPLv3/Commercial, see LICENSE file for more details
  *
  * code by jhavatar
  * https://stackoverflow.com/questions/30777698/android-footer-scrolls-off-screen-when-used-in-coordinatorlayout/35405095#35405095
